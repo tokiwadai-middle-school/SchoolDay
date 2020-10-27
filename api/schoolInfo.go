@@ -9,13 +9,23 @@ import (
 )
 
 // 학교 이름으로 학교 정보 검색
-func GetSchoolInfo(schul_nm string) (map[string]string, error) {
+func GetSchoolInfoByName(SCHUL_NM string) (map[string]string, error) {
+	return GetSchoolInfo("SCHUL_NM", SCHUL_NM)
+}
+
+// 학교 코드로 학교 정보 검색
+func GetSchoolInfoByCode(SD_SCHUL_CODE string) (map[string]string, error) {
+	return GetSchoolInfo("SD_SCHUL_CODE", SD_SCHUL_CODE)
+}
+
+// 학교 정보
+func GetSchoolInfo(key string, value string) (map[string]string, error) {
 	apiUrl := "https://open.neis.go.kr/hub/schoolInfo" // API 주소
 
 	// API 파라미터
 	params := url.Values{}
-	params.Add("key", env.SchoolInfoKey)
-	params.Add("schul_nm", schul_nm)
+	params.Add("KEY", env.SchoolInfoKey)
+	params.Add(key, value)
 
 	jsonBytes, err := Request(apiUrl, params) // API 호출
 
