@@ -1,8 +1,8 @@
 package main
 
 import (
-	"SchoolDay/command"
-	"SchoolDay/env"
+	"./command"
+	"./env"
 	"flag"
 	"fmt"
 	"os"
