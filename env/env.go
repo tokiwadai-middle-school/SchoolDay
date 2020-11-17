@@ -52,7 +52,7 @@ func init() {
 
 	// 존재하지 않는 환경 변수가 있을 경우 출력 후 종료
 	if len(missingEnv) > 0 {
-		fmt.Printf("set following environment variables: %s", strings.Join(missingEnv, "\n"))
+		fmt.Printf("\nmissing environment variables:\n%s\n\n", strings.Join(missingEnv, "\n"))
 		os.Exit(1)
 	}
 }

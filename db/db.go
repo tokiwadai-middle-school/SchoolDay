@@ -48,24 +48,16 @@ func dbCreate(name string) {
 		panic(err)
 	}
 
-	//CREATE TABLE user(
-	//	discordId 			CHAR(18) PRIMARY KEY,
-	//	scCode 				CHAR(7) NOT NULL,
-	//	scGrade 			TINYINT(1),
-	//	scClass 			TINYINT(1),
-	//	scheduleChannelId 	CHAR(18),
-	//	timetableChannelId 	CHAR(18),
-	//	dietChannelId 		CHAR(18)
-	//);
-	query := "CREATE TABLE user (" +
-		"discordId CHAR(18) PRIMARY KEY, " +
-		"scCode CHAR(7) NOT NULL, " +
-		"scGrade TINYINT(1), " +
-		"scClass TINYINT(1), " +
-		"scheduleChannelId CHAR(18), " +
-		"timetableChannelId CHAR(18), " +
-		"dietChannelId CHAR(18)" +
-		");"
+	query := `CREATE TABLE user (
+		discordId CHAR(18) PRIMARY KEY,
+		scCode CHAR(7) NOT NULL,
+		scGrade TINYINT,
+		scClass TINYINT,
+		scheduleChannelId CHAR(18),
+		timetableChannelId CHAR(18),
+		dietChannelId CHAR(18)
+		);`
+
 	_, err = conn.Exec(query)
 	if err != nil {
 		panic(err)
