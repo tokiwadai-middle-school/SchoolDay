@@ -1,16 +1,15 @@
 package main
 
 import (
-	"./command"
-	"./env"
+	"SchoolDay/command"
+	"SchoolDay/env"
 	"flag"
 	"fmt"
+	"github.com/bwmarrin/discordgo"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
-
-	"github.com/bwmarrin/discordgo"
 )
 
 var Token string
