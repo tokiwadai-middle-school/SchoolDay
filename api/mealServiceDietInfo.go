@@ -1,7 +1,7 @@
 package api
 
 import (
-	"../env"
+	"SchoolDay/env"
 	"encoding/json"
 	"errors"
 	"fmt"
