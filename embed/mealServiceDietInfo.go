@@ -1,12 +1,11 @@
 package embed
 
 import (
+	"SchoolDay/api"
+	"SchoolDay/extension"
 	"strconv"
 	"strings"
 	"time"
-
-	"../api"
-	"../extension"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -19,9 +18,9 @@ func GetNextDietEmbed(schoolInfo map[string]string, date time.Time) (*discordgo.
 		return nil, err
 	}
 
-	mealCode := extension.GetMealCode(date)	// 급식 시간대 코드
+	mealCode := extension.GetMealCode(date)                   // 급식 시간대 코드
 	dailyDiet := mealServiceDietInfo[date.Format("20060102")] // 하루 치 급식 식단
-	nextDiet, exists := dailyDiet[mealCode]	// 시간대에 해당하는 급식 식단
+	nextDiet, exists := dailyDiet[mealCode]                   // 시간대에 해당하는 급식 식단
 
 	// 시간대에 해당하는 급식 식단이 없을 경우 다른 시간대 급식 식단 탐색
 	for !exists {
@@ -88,7 +87,7 @@ func GetDailyDietEmbed(schoolInfo map[string]string, date time.Time) (*discordgo
 // 주간 급식 식단
 func GetWeeklyDietEmbed(schoolInfo map[string]string, date time.Time) (*discordgo.MessageEmbed, error) {
 	monday := date.AddDate(0, 0, -(int(date.Weekday()) - 1)) // 월요일
-	friday := monday.AddDate(0, 0, 4) // 금요일
+	friday := monday.AddDate(0, 0, 4)                        // 금요일
 
 	mealServiceDietInfo, err := api.GetMealServiceDietInfo(schoolInfo, monday, friday) // 일주일 치 급식
 
