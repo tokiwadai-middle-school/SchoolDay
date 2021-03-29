@@ -1,6 +1,8 @@
 package extension
 
 import (
+	"fmt"
+	"log"
 	"time"
 )
 
@@ -65,4 +67,18 @@ func GetMealName(mealCode int) string {
 	}
 
 	return mealName
+}
+
+func ErrorLog(msg string, err error) {
+	if err != nil {
+		fmt.Println(msg, err)
+	}
+	return
+}
+
+func ErrorHandler(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+	return
 }
