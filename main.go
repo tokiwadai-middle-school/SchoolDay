@@ -3,6 +3,7 @@ package main
 import (
 	"SchoolDay/command"
 	"SchoolDay/env"
+	"SchoolDay/extension"
 	"flag"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
@@ -42,7 +43,11 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 
-	dg.Close()
+	err = dg.Close()
+	if err != nil {
+		extension.ErrorLog("error closing listening/heartbeat goroutine", err)
+		return
+	}
 }
 
 // 메시지 핸들러
