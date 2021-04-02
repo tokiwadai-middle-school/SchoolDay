@@ -48,6 +48,7 @@ func main() {
 		extension.ErrorLog("error closing listening/heartbeat goroutine", err)
 		return
 	}
+
 }
 
 // 메시지 핸들러

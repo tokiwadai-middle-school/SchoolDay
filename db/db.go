@@ -18,15 +18,13 @@ type dbInfo struct {
 	user		string
 	pwd 		string
 	url 		string
-	engine 		string
 	database 	string
 }
 
-var db_interface = dbInfo{
+var dbInterface = dbInfo{
 	env.DBUser,
 	env.DBPwd,
 	env.DBUrl,
-	env.DBEngine,
 	env.DBName,
 }
 
@@ -77,8 +75,8 @@ func dbQuery(db dbInfo, query string) (count int) {
 }
 */
 
-func getGormDB() *gorm.DB {
-	Source := db_interface.user+":"+db_interface.pwd+"@tcp("+db_interface.url+")/"+db_interface.database
+func GetGormDB() *gorm.DB {
+	Source := dbInterface.user+":"+ dbInterface.pwd+"@tcp("+ dbInterface.url+")/"+ dbInterface.database
 	conn, err := gorm.Open("mysql", Source)
 	extension.ErrorHandler(err)
 
