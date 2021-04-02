@@ -49,7 +49,10 @@ func GetMealServiceDietInfo(schoolInfo map[string]string, fromDate time.Time, to
 
 		// Map으로 변환
 		row := make(map[string]string)
-		json.Unmarshal(rowJson, &row)
+		err = json.Unmarshal(rowJson, &row)
+		if err != nil {
+			return nil, err
+		}
 
 		// 문자열 처리
 		hangul := regexp.MustCompile(`[가-힣\s]`)

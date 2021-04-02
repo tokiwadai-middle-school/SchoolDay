@@ -41,7 +41,10 @@ func GetSchoolInfo(key string, value string) (map[string]string, error) {
 
 	// Map으로 변환
 	schoolInfo := make(map[string]string)
-	json.Unmarshal(row, &schoolInfo)
+	err = json.Unmarshal(row, &schoolInfo)
+	if err != nil {
+		return nil, err
+	}
 
 	return schoolInfo, nil
 }

@@ -18,14 +18,14 @@ func DailyDiet(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 		return
 	}
 
-	emb, err := embed.GetDailyDietEmbed(schoolInfo, time.Now())
+	dailyDietEmbed, err := embed.GetDailyDietEmbed(schoolInfo, time.Now())
 
 	if err != nil {
 		_, err := s.ChannelMessageSend(m.ChannelID, "오늘은 급식이 없습니다.")
 		extension.ErrorHandler(err)
-	return
+		return
 	}
 
-	_, err  = s.ChannelMessageSendEmbed(m.ChannelID, emb)
+	_, err  = s.ChannelMessageSendEmbed(m.ChannelID, dailyDietEmbed)
 	extension.ErrorHandler(err)
 }
