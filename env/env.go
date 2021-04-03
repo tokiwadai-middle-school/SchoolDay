@@ -38,7 +38,6 @@ func init() {
 	DBUser, exists["MySQL_CREDENTIAL_USERNAME"] = os.LookupEnv("MySQL_CREDENTIAL_USERNAME")
 	DBPwd, exists["MySQL_CREDENTIAL_PASSWORD"] = os.LookupEnv("MySQL_CREDENTIAL_PASSWORD")
 	DBUrl, exists["MySQL_SERVER_URL"] = os.LookupEnv("MySQL_SERVER_URL")
-	DBEngine, exists["MySQL_DB_ENGINE"] = os.LookupEnv("MySQL_DB_ENGINE")
 	DBName, exists["MySQL_DB_NAME"] = os.LookupEnv("MySQL_DB_NAME")
 
 	// 존재하지 않는 환경 변수 기록

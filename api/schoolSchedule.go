@@ -48,7 +48,10 @@ func GetSchoolSchedule(schoolInfo map[string]string, fromDate time.Time, toDate 
 
 		// Map으로 변환
 		row := make(map[string]string)
-		json.Unmarshal(rowJson, &row)
+		err = json.Unmarshal(rowJson, &row)
+		if err != nil {
+			return nil, err
+		}
 
 		// 문자열 처리
 		re := regexp.MustCompile(`[a-z A-Z 가-힣 0-9 & \s]`)

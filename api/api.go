@@ -1,6 +1,7 @@
 package api
 
 import (
+	"SchoolDay/extension"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -23,7 +24,10 @@ func Request(apiUrl string, params url.Values) ([]byte, error) {
 		return nil, err
 	}
 
-	defer req.Body.Close()
+	defer func() {
+		err = req.Body.Close()
+		extension.ErrorHandler(err)
+	}()
 	body, err := ioutil.ReadAll(req.Body) // 바이트 배열로 저장
 
 	if err != nil {
