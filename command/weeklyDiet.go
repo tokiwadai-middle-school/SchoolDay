@@ -15,7 +15,7 @@ func WeeklyDiet(s *discordgo.Session, m *discordgo.MessageCreate, args []string)
 	if err != nil {
 		_, err = s.ChannelMessageSend(m.ChannelID, "학교를 찾을 수 없습니다.")
 		extension.ErrorHandler(err)
-		return
+
 	}
 
 	weeklyDietEmbed, err := embed.GetWeeklyDietEmbed(schoolInfo, time.Now())
@@ -23,7 +23,6 @@ func WeeklyDiet(s *discordgo.Session, m *discordgo.MessageCreate, args []string)
 	if err != nil {
 		_, err = s.ChannelMessageSend(m.ChannelID, "이번 주는 급식이 없습니다.")
 		extension.ErrorHandler(err)
-		return
 	}
 
 	_, err = s.ChannelMessageSendEmbed(m.ChannelID, weeklyDietEmbed)

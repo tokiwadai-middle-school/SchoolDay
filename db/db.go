@@ -2,17 +2,10 @@ package db
 
 import (
 	"SchoolDay/env"
-	"SchoolDay/extension"
-	"github.com/jinzhu/gorm" /* TODO: Document -> https://github.com/jirfag/go-queryset#relation-with-gorm */
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
-// discordId 			string
-// scCode 				string
-// scGrade 				string
-// scClass 				string
-// scheduleChannelId 	string
-// timetableChannelId 	string
-// dietChannelId 		string
+
 
 type dbInfo struct {
 	user		string
@@ -75,26 +68,30 @@ func dbQuery(db dbInfo, query string) (count int) {
 }
 */
 
+// discordId 			string
+// scCode 				string
+// scGrade 				string
+// scClass 				string
+// scheduleChannelId 	string
+// timetableChannelId 	string
+// dietChannelId 		string
+
+type User struct {
+	discordId	uint	`gorm:"primaryKey"`
+	scCode	string	`gorm:"not null"`
+	scGrade	int
+	scClass int
+	scheduleChannelId string
+	timetableChannelId string
+	dietChannelId string
+}
+
 func GetGormDB() *gorm.DB {
-	Source := dbInterface.user+":"+ dbInterface.pwd+"@tcp("+ dbInterface.url+")/"+ dbInterface.database
-	conn, err := gorm.Open("mysql", Source)
-	extension.ErrorHandler(err)
+	dsn := dbInterface.user + ":" + dbInterface.pwd +  "@tcp(" + dbInterface.url+")/"+ dbInterface.database + "?charset=utf8mb4"
 
-	/* TODO: DB가 이미 존재 한지 체크하도록 구현해야 함
-	conn.Exec("CREATE DATABASE "+ db_interface.database)
-	conn.Exec("USE "+db_interface.database)
-
-	TODO: TABLE 이 존재하는지 체크하도록 구현해야 함
-	query := `CREATE TABLE user (
-		discordId CHAR(18) PRIMARY KEY,
-		scCode CHAR(7) NOT NULL,
-		scGrade TINYINT,
-		scClass TINYINT,
-		scheduleChannelId CHAR(18),
-		timetableChannelId CHAR(18),
-		dietChannelId CHAR(18)
-		);`
-	conn.Exec(query)
-	*/
+	conn, err := gorm.Open(mysql.Open(dsn))
+	if err != nil {
+		panic("failed to connect database")
+	}
 	return conn
 }
