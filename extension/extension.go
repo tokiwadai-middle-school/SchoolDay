@@ -11,20 +11,20 @@ func GetKoreanWeekday(date time.Time) string {
 	var koreanWeekday string
 
 	switch int(date.Weekday()) {
-	case 0:
-		koreanWeekday = "일"
-	case 1:
-		koreanWeekday = "월"
-	case 2:
-		koreanWeekday = "화"
-	case 3:
-		koreanWeekday = "수"
-	case 4:
-		koreanWeekday = "목"
-	case 5:
-		koreanWeekday = "금"
-	case 6:
-		koreanWeekday = "토"
+		case 0:
+			koreanWeekday = "일"
+		case 1:
+			koreanWeekday = "월"
+		case 2:
+			koreanWeekday = "화"
+		case 3:
+			koreanWeekday = "수"
+		case 4:
+			koreanWeekday = "목"
+		case 5:
+			koreanWeekday = "금"
+		case 6:
+			koreanWeekday = "토"
 	}
 
 	return "(" + koreanWeekday + ")"
