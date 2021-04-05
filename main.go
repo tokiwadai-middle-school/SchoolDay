@@ -5,7 +5,6 @@ import (
 	"SchoolDay/env"
 	"SchoolDay/extension"
 	"flag"
-	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"os"
 	"os/signal"
@@ -14,6 +13,7 @@ import (
 )
 
 var Token string
+var log = extension.Log()
 
 // 봇 토큰 처리
 func init() {
@@ -26,7 +26,8 @@ func main() {
 	dg, err := discordgo.New("Bot " + Token)
 
 	if err != nil {
-		fmt.Println("error creating Discord session,", err)
+
+		log.Fatal("error creating Discord session,", err)
 		return
 	}
 
@@ -34,18 +35,18 @@ func main() {
 
 	err = dg.Open()
 	if err != nil {
-		fmt.Println("error opening connection,", err)
+		log.Fatal("error opening connection,", err)
 		return
 	}
 
-	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
+	log.Infof("Bot is now running.  Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 
 	err = dg.Close()
 	if err != nil {
-		extension.ErrorLog("error closing listening/heartbeat goroutine", err)
+		log.Fatal("error closing listening/heartbeat goroutine", err)
 		return
 	}
 
@@ -58,7 +59,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	prefix := "!" // 접두사
+	prefix := "%" // 접두사
 
 	// 접두사 감지 시
 	if strings.HasPrefix(m.Content, prefix) {

@@ -1,8 +1,8 @@
 package extension
 
 import (
-	"fmt"
-	"log"
+	"github.com/mattn/go-colorable"
+	logHandler "github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -69,16 +69,13 @@ func GetMealName(mealCode int) string {
 	return mealName
 }
 
-func ErrorLog(msg string, err error) {
-	if err != nil {
-		fmt.Println(msg, err)
-	}
-	return
-}
 
-func ErrorHandler(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-	return
+func Log() *logHandler.Entry {
+	logHandler.SetFormatter(&logHandler.TextFormatter{
+		ForceColors: true,
+	})
+	logHandler.SetOutput(colorable.NewColorableStdout())
+	logHandler.SetLevel(logHandler.DebugLevel)
+	var lo = logHandler.WithFields(logHandler.Fields{})
+	return lo
 }
