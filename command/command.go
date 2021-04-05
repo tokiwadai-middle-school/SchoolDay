@@ -1,8 +1,11 @@
 package command
 
 import (
+	"SchoolDay/extension"
 	"github.com/bwmarrin/discordgo"
 )
+
+var log = extension.Log()
 
 type Command struct {
 	Exec        func(*discordgo.Session, *discordgo.MessageCreate, []string) // 명령어 함수

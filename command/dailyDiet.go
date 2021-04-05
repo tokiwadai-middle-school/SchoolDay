@@ -3,10 +3,8 @@ package command
 import (
 	"SchoolDay/api"
 	"SchoolDay/embed"
-	"SchoolDay/extension"
-	"time"
-
 	"github.com/bwmarrin/discordgo"
+	"time"
 )
 
 func DailyDiet(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
@@ -14,7 +12,9 @@ func DailyDiet(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 
 	if err != nil {
 		_, err := s.ChannelMessageSend(m.ChannelID, "학교를 찾을 수 없습니다.")
-		extension.ErrorHandler(err)
+		if err != nil {
+			log.Warning(err)
+		}
 		return
 	}
 
@@ -22,10 +22,14 @@ func DailyDiet(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 
 	if err != nil {
 		_, err := s.ChannelMessageSend(m.ChannelID, "오늘은 급식이 없습니다.")
-		extension.ErrorHandler(err)
+		if err != nil {
+			log.Warning(err)
+		}
 		return
 	}
 
 	_, err  = s.ChannelMessageSendEmbed(m.ChannelID, dailyDietEmbed)
-	extension.ErrorHandler(err)
+	if err != nil {
+		log.Warning(err)
+	}
 }

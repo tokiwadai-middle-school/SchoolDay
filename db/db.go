@@ -86,9 +86,8 @@ type User struct {
 	dietChannelId string
 }
 
-func GetGormDB() *gorm.DB {
+func database() *gorm.DB {
 	dsn := dbInterface.user + ":" + dbInterface.pwd +  "@tcp(" + dbInterface.url+")/"+ dbInterface.database + "?charset=utf8mb4"
-
 	conn, err := gorm.Open(mysql.Open(dsn))
 	if err != nil {
 		panic("failed to connect database")
