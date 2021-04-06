@@ -1,8 +1,8 @@
 package extension
 
 import (
-	"fmt"
-	"log"
+	"github.com/mattn/go-colorable"
+	logHandler "github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -11,20 +11,20 @@ func GetKoreanWeekday(date time.Time) string {
 	var koreanWeekday string
 
 	switch int(date.Weekday()) {
-	case 0:
-		koreanWeekday = "일"
-	case 1:
-		koreanWeekday = "월"
-	case 2:
-		koreanWeekday = "화"
-	case 3:
-		koreanWeekday = "수"
-	case 4:
-		koreanWeekday = "목"
-	case 5:
-		koreanWeekday = "금"
-	case 6:
-		koreanWeekday = "토"
+		case 0:
+			koreanWeekday = "일"
+		case 1:
+			koreanWeekday = "월"
+		case 2:
+			koreanWeekday = "화"
+		case 3:
+			koreanWeekday = "수"
+		case 4:
+			koreanWeekday = "목"
+		case 5:
+			koreanWeekday = "금"
+		case 6:
+			koreanWeekday = "토"
 	}
 
 	return "(" + koreanWeekday + ")"
@@ -69,16 +69,13 @@ func GetMealName(mealCode int) string {
 	return mealName
 }
 
-func ErrorLog(msg string, err error) {
-	if err != nil {
-		fmt.Println(msg, err)
-	}
-	return
-}
 
-func ErrorHandler(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-	return
+func Log() *logHandler.Entry {
+	logHandler.SetFormatter(&logHandler.TextFormatter{
+		ForceColors: true,
+	})
+	logHandler.SetOutput(colorable.NewColorableStdout())
+	logHandler.SetLevel(logHandler.DebugLevel)
+	var lo = logHandler.WithFields(logHandler.Fields{})
+	return lo
 }

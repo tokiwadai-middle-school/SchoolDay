@@ -1,10 +1,13 @@
 package api
 
 import (
+	"SchoolDay/extension"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 )
+
+var log = extension.Log()
 
 // API 호출
 func Request(apiUrl string, params url.Values) ([]byte, error) {
@@ -23,7 +26,12 @@ func Request(apiUrl string, params url.Values) ([]byte, error) {
 		return nil, err
 	}
 
-	defer req.Body.Close()
+	defer func() {
+		err = req.Body.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}()
 	body, err := ioutil.ReadAll(req.Body) // 바이트 배열로 저장
 
 	if err != nil {
