@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+
 func DailyDiet(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) < 2 {
 		log.Warning("학교가 지정되지 않았습니다.")

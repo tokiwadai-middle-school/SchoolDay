@@ -2,10 +2,17 @@ package db
 
 import (
 	"SchoolDay/env"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"SchoolDay/extension"
+	"SchoolDay/models"
+	"context"
+	"github.com/jmoiron/sqlx"
+	"github.com/volatiletech/null/v8"
+	"github.com/volatiletech/sqlboiler/v4/boil"
+	_ "github.com/go-sql-driver/mysql"
 )
 
+
+var log = extension.Log()
 
 type dbInfo struct {
 	user		string
@@ -39,15 +46,7 @@ func dbCreate(name string) {
 	_, err = conn.Exec("USE "+name)
 	extension.ErrorHandler(err)
 
-	query := `CREATE TABLE user (
-		discordId CHAR(18) PRIMARY KEY,
-		scCode CHAR(7) NOT NULL,
-		scGrade TINYINT,
-		scClass TINYINT,
-		scheduleChannelId CHAR(18),
-		timetableChannelId CHAR(18),
-		dietChannelId CHAR(18)
-		);`
+	query := `CREATE TABLE users ( discordId CHAR(18) PRIMARY KEY, scCode CHAR(7) NOT NULL, scGrade TINYINT, scClass TINYINT, scheduleChannelId CHAR(18), timetableChannelId CHAR(18), dietChannelId CHAR(18));`
 
 	_, err = conn.Exec(query)
 	extension.ErrorHandler(err)
@@ -75,22 +74,88 @@ func dbQuery(db dbInfo, query string) (count int) {
 // scheduleChannelId 	string
 // timetableChannelId 	string
 // dietChannelId 		string
-
+/*
 type User struct {
-	discordId	uint	`gorm:"primaryKey"`
-	scCode	string	`gorm:"not null"`
-	scGrade	int
-	scClass int
-	scheduleChannelId string
+	DiscordId          string
+	ScCode             string `gorm:"not null"`
+	ScGrade            string
+	ScClass            string
+	scheduleChannelId  string
 	timetableChannelId string
-	dietChannelId string
+	dietChannelId      string
+}
+*/
+
+var schema = `
+CREATE TABLE users ( 
+	discord_id CHAR(18) PRIMARY KEY, 
+	sc_code CHAR(7) NOT NULL, 
+	sc_grade TINYINT, 
+	sc_class TINYINT, 
+	schedule_channel_id CHAR(18), 
+	timetable_channel_id CHAR(18), 
+	diet_channel_id CHAR(18)
+);
+`
+
+func Database() (*sqlx.DB, error) {
+	dsn := dbInterface.user + ":" + dbInterface.pwd +  "@tcp(" + dbInterface.url+")/"+ dbInterface.database + "?charset=utf8mb4"
+	db, err := sqlx.Connect("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+	//db.MustExec(schema)
+	boil.SetDB(db)
+	return db, nil
 }
 
-func database() *gorm.DB {
-	dsn := dbInterface.user + ":" + dbInterface.pwd +  "@tcp(" + dbInterface.url+")/"+ dbInterface.database + "?charset=utf8mb4"
-	conn, err := gorm.Open(mysql.Open(dsn))
+
+func IsExists(discordId string) (interface{}, error) {
+	ctx := context.Background()
+	db, err := Database()
 	if err != nil {
-		panic("failed to connect database")
+		log.Fatalln(err)
+		return nil, err
 	}
-	return conn
+	status, err := models.UserExists(ctx, db, discordId)
+	if err != nil {
+		return nil, err
+	}
+	return status, nil
+}
+
+func UserAdd(
+	discordId string,
+	scCode string,
+	scGrade null.Int8,
+	scClass null.Int8,
+	scheduleChannelId null.String,
+	timetableChannelId null.String) (interface{}, error) {
+
+	status, err := IsExists(discordId)
+	if err != nil {
+		return nil, err
+	}
+	if true != status {
+		db, err := Database()
+
+		if err != nil {
+			return nil, err
+		}
+		ctx := context.Background()
+		resp := models.User{
+			DiscordId: discordId,
+			ScCode: scCode,
+			ScGrade: scGrade,
+			ScClass: scClass,
+			ScheduleChannelId:  scheduleChannelId,
+			TimetableChannelId: timetableChannelId,
+		}
+		err = resp.Insert(ctx, db,  boil.Infer())
+		if err != nil {
+			return nil, err
+		}
+		return true, nil
+	}
+	return false, nil
 }
