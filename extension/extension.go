@@ -1,9 +1,11 @@
 package extension
 
 import (
+	"regexp"
+	"time"
+
 	"github.com/mattn/go-colorable"
 	logHandler "github.com/sirupsen/logrus"
-	"time"
 )
 
 // 날짜에 해당하는 한국어 요일 반환
@@ -11,20 +13,20 @@ func GetKoreanWeekday(date time.Time) string {
 	var koreanWeekday string
 
 	switch int(date.Weekday()) {
-		case 0:
-			koreanWeekday = "일"
-		case 1:
-			koreanWeekday = "월"
-		case 2:
-			koreanWeekday = "화"
-		case 3:
-			koreanWeekday = "수"
-		case 4:
-			koreanWeekday = "목"
-		case 5:
-			koreanWeekday = "금"
-		case 6:
-			koreanWeekday = "토"
+	case 0:
+		koreanWeekday = "일"
+	case 1:
+		koreanWeekday = "월"
+	case 2:
+		koreanWeekday = "화"
+	case 3:
+		koreanWeekday = "수"
+	case 4:
+		koreanWeekday = "목"
+	case 5:
+		koreanWeekday = "금"
+	case 6:
+		koreanWeekday = "토"
 	}
 
 	return "(" + koreanWeekday + ")"
@@ -69,6 +71,10 @@ func GetMealName(mealCode int) string {
 	return mealName
 }
 
+func IsInt(str string) bool {
+	var digitCheck = regexp.MustCompile(`^[0-9]+$`)
+	return digitCheck.MatchString(str) && len(str) <= 9
+}
 
 func Log() *logHandler.Entry {
 	logHandler.SetFormatter(&logHandler.TextFormatter{
