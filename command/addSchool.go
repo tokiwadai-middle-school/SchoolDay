@@ -3,9 +3,12 @@ package command
 import (
 	"SchoolDay/api"
 	"SchoolDay/db"
+	"SchoolDay/extension"
+	"fmt"
+	"strconv"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/volatiletech/null/v8"
-	"strconv"
 )
 
 // discordId 			string
@@ -14,37 +17,59 @@ import (
 // scClass 				string
 // scheduleChannelId 	string
 // timetableChannelId 	string
-// dietChannelId 		string
+// dietChannelId
 
 func AddSchool(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
-	if err != nil {
-		log.Fatalln(err)
+	if len(args) < 4 {
+		_, err = s.ChannelMessageSend(m.ChannelID, "사용법: `%학교등록 학교명 학년 반`")
+
+		if err != nil {
+			log.Warningln(err)
+		}
+
 		return
-	}
-
-	if len(args) < 2 {
-
 	} else {
 		var discordId = m.Author.ID
 		scCode, err := api.GetSchoolInfoByName(args[1])
 
 		if err != nil {
-			log.Error(err)
-		}
+			log.Warningln(err)
 
-		ScGrade, err := strconv.Atoi(args[2])
+			_, err = s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("학교를 찾을 수 없습니다: `%s`", args[1]))
 
-		if err != nil {
-			log.Fatalln(err)
+			if err != nil {
+				log.Warningln(err)
+			}
+
 			return
 		}
 
-		ScClass, err := strconv.Atoi(args[3])
+		var ScGrade, ScClass int
 
-		if err != nil {
-			log.Fatalln(err)
+		if extension.IsInt(args[2]) {
+			ScGrade, _ = strconv.Atoi(args[2])
+		} else {
+			_, err = s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("학년 입력이 잘못 됐습니다: `%s`", args[2]))
+
+			if err != nil {
+				log.Warningln(err)
+			}
+
 			return
 		}
+
+		if extension.IsInt(args[3]) {
+			ScClass, _ = strconv.Atoi(args[3])
+		} else {
+			_, err = s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("반 입력이 잘못 됐습니다: `%s`", args[3]))
+
+			if err != nil {
+				log.Warningln(err)
+			}
+
+			return
+		}
+
 		var AcGrade int8
 		AcGrade = int8(ScGrade)
 		scGrade := null.Int8From(AcGrade)
@@ -60,16 +85,21 @@ func AddSchool(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 
 		if err != nil {
 			log.Fatalln(err)
+
+			_, err = s.ChannelMessageSend(m.ChannelID, "학교 등록에 실패했습니다.")
+
+			if err != nil {
+				log.Warningln(err)
+			}
+
 			return
 		}
 
-		_, err = s.ChannelMessageSend(m.ChannelID, "ok")
+		_, err = s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("등록 완료: `%s %d-%d`", scCode["SCHUL_NM"], scGrade.Int8, scClass.Int8))
 
 		if err != nil {
-			log.Error(err)
+			log.Warningln(err)
 			return
 		}
-		return
 	}
-
 }

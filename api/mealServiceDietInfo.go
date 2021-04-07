@@ -15,7 +15,7 @@ import (
 )
 
 // 학교 급식 식단
-func GetMealServiceDietInfo(schoolInfo map[string]string, fromDate time.Time, toDate time.Time) (map[string]map[int][]string, error) {
+func GetMealServiceDietInfo(schoolInfo map[string]string, fromDate time.Time, toDate time.Time, mealCode int) (map[string]map[int][]string, error) {
 	apiUrl := "https://open.neis.go.kr/hub/mealServiceDietInfo" // API 주소
 
 	// API 파라미터
@@ -25,6 +25,10 @@ func GetMealServiceDietInfo(schoolInfo map[string]string, fromDate time.Time, to
 	params.Add("SD_SCHUL_CODE", schoolInfo["SD_SCHUL_CODE"])
 	params.Add("MLSV_FROM_YMD", fromDate.Format("20060102"))
 	params.Add("MLSV_TO_YMD", toDate.Format("20060102"))
+
+	if mealCode >= 1 && mealCode <= 3 {
+		params.Add("MMEAL_SC_CODE", strconv.Itoa(mealCode))
+	}
 
 	resultJson, err := Request(apiUrl, params) // API 호출
 

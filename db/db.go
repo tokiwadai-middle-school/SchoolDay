@@ -5,20 +5,20 @@ import (
 	"SchoolDay/extension"
 	"SchoolDay/models"
 	"context"
+
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
-	_ "github.com/go-sql-driver/mysql"
 )
-
 
 var log = extension.Log()
 
 type dbInfo struct {
-	user		string
-	pwd 		string
-	url 		string
-	database 	string
+	user     string
+	pwd      string
+	url      string
+	database string
 }
 
 var dbInterface = dbInfo{
@@ -27,7 +27,6 @@ var dbInterface = dbInfo{
 	env.DBUrl,
 	env.DBName,
 }
-
 
 /* TODO: ORM 구현 완료하면 삭제해야 함
 func dbCreate(name string) {
@@ -46,7 +45,7 @@ func dbCreate(name string) {
 	_, err = conn.Exec("USE "+name)
 	extension.ErrorHandler(err)
 
-	query := `CREATE TABLE users ( discordId CHAR(18) PRIMARY KEY, scCode CHAR(7) NOT NULL, scGrade TINYINT, scClass TINYINT, scheduleChannelId CHAR(18), timetableChannelId CHAR(18), dietChannelId CHAR(18));`
+	query := `CREATE TABLE user ( discordId CHAR(18) PRIMARY KEY, scCode CHAR(7) NOT NULL, scGrade TINYINT, scClass TINYINT, scheduleChannelId CHAR(18), timetableChannelId CHAR(18), dietChannelId CHAR(18));`
 
 	_, err = conn.Exec(query)
 	extension.ErrorHandler(err)
@@ -87,19 +86,19 @@ type User struct {
 */
 
 var schema = `
-CREATE TABLE users ( 
-	discord_id CHAR(18) PRIMARY KEY, 
-	sc_code CHAR(7) NOT NULL, 
-	sc_grade TINYINT, 
-	sc_class TINYINT, 
-	schedule_channel_id CHAR(18), 
-	timetable_channel_id CHAR(18), 
-	diet_channel_id CHAR(18)
+CREATE TABLE user ( 
+	discordId CHAR(18) PRIMARY KEY, 
+	scCode CHAR(7) NOT NULL, 
+	scGrade TINYINT, 
+	scClass TINYINT, 
+	scheduleChannelId CHAR(18), 
+	timetableChannelId CHAR(18), 
+	dietChannelId CHAR(18)
 );
 `
 
 func Database() (*sqlx.DB, error) {
-	dsn := dbInterface.user + ":" + dbInterface.pwd +  "@tcp(" + dbInterface.url+")/"+ dbInterface.database + "?charset=utf8mb4"
+	dsn := dbInterface.user + ":" + dbInterface.pwd + "@tcp(" + dbInterface.url + ")/" + dbInterface.database + "?charset=utf8mb4"
 	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
 		return nil, err
@@ -108,7 +107,6 @@ func Database() (*sqlx.DB, error) {
 	boil.SetDB(db)
 	return db, nil
 }
-
 
 func IsExists(discordId string) (interface{}, error) {
 	ctx := context.Background()
@@ -144,18 +142,30 @@ func UserAdd(
 		}
 		ctx := context.Background()
 		resp := models.User{
-			DiscordId: discordId,
-			ScCode: scCode,
-			ScGrade: scGrade,
-			ScClass: scClass,
+			DiscordId:          discordId,
+			ScCode:             scCode,
+			ScGrade:            scGrade,
+			ScClass:            scClass,
 			ScheduleChannelId:  scheduleChannelId,
 			TimetableChannelId: timetableChannelId,
 		}
-		err = resp.Insert(ctx, db,  boil.Infer())
+		err = resp.Insert(ctx, db, boil.Infer())
 		if err != nil {
 			return nil, err
 		}
 		return true, nil
 	}
 	return false, nil
+}
+
+func UserGet(discordId string) (*models.User, error) {
+	db, err := Database()
+
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := context.Background()
+
+	return models.FindUser(ctx, db, discordId)
 }
