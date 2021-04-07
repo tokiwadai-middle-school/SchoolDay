@@ -28,7 +28,7 @@ var Commands = map[string]Command{
 		Usage:       []string{"학교명", "학년", "반"},
 	},
 	"급식": {
-		Exec:        DailyDiet,
+		Exec:        Diet,
 		Description: "급식 식단 출력",
 		Usage:       []string{"학교명", "날짜", "식사종류"},
 	},

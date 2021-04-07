@@ -42,17 +42,6 @@ func GetWeekNumber(date time.Time) int {
 	return currentWeek - firstWeek
 }
 
-// 시각에 해당하는 급식 시간대 코드 반환
-func GetMealCode(date time.Time) int {
-	if date.Hour() < 8 {
-		return 1 // 조식
-	} else if date.Hour() < 13 {
-		return 2 // 중식
-	} else {
-		return 3 // 석식
-	}
-}
-
 // 급식 시간대 코드에 해당하는 이름 반환
 func GetMealName(mealCode int) string {
 	var mealName string
@@ -66,6 +55,9 @@ func GetMealName(mealCode int) string {
 
 	case 3:
 		mealName = "석식"
+
+	default:
+		mealName = "급식"
 	}
 
 	return mealName

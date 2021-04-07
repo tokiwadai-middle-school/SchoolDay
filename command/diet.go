@@ -14,7 +14,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func DailyDiet(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+func Diet(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	var schoolInfo map[string]string
 	var mealCode int
 	var err error
@@ -76,18 +76,7 @@ func DailyDiet(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 	dailyDietEmbed, err := embed.GetDailyDietEmbed(schoolInfo, date, mealCode)
 
 	if err != nil {
-		mealName := "급식"
-
-		switch mealCode {
-			case 1:
-				mealName = "조식"
-
-			case 2:
-				mealName = "중식"
-
-			case 3:
-				mealName = "석식"
-		}
+		mealName := extension.GetMealName(mealCode)
 
 		_, err := s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%d월 %d일 %s이 없습니다.", date.Month(), date.Day(), mealName))
 
