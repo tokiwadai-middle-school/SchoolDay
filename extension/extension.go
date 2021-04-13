@@ -1,9 +1,11 @@
 package extension
 
 import (
+	"fmt"
 	"regexp"
 	"time"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/mattn/go-colorable"
 	logHandler "github.com/sirupsen/logrus"
 )
@@ -63,9 +65,10 @@ func GetMealName(mealCode int) string {
 	return mealName
 }
 
-func IsInt(str string) bool {
+// 4자리 이하의 자연수인지 검사
+func IsValidNumber(str string) bool {
 	var digitCheck = regexp.MustCompile(`^[0-9]+$`)
-	return digitCheck.MatchString(str) && len(str) <= 9
+	return digitCheck.MatchString(str) && len(str) <= 4
 }
 
 func Log() *logHandler.Entry {
@@ -76,4 +79,22 @@ func Log() *logHandler.Entry {
 	logHandler.SetLevel(logHandler.DebugLevel)
 	var lo = logHandler.WithFields(logHandler.Fields{})
 	return lo
+}
+
+// 메시지 전송 및 예외 처리
+func ChannelMessageSend(s *discordgo.Session, m *discordgo.MessageCreate, format string, args ...interface{}) {
+	_, err := s.ChannelMessageSend(m.ChannelID, fmt.Sprintf(format, args...))
+
+	if err != nil {
+		Log().Warningln(err)
+	}
+}
+
+// 임베드 전송 및 예외 처리
+func ChannelMessageSendEmbed(s *discordgo.Session, m *discordgo.MessageCreate, embed *discordgo.MessageEmbed) {
+	_, err := s.ChannelMessageSendEmbed(m.ChannelID, embed)
+
+	if err != nil {
+		Log().Warningln(err)
+	}
 }
