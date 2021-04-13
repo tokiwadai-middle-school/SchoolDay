@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -14,7 +15,7 @@ import (
 )
 
 // 학급 시간표
-func GetTimetable(schoolInfo map[string]string, grade string, class string, fromDate time.Time, toDate time.Time) (map[string]map[string]string, error) {
+func GetTimetable(schoolInfo map[string]string, fromDate time.Time, toDate time.Time, grade int, class int) (map[string]map[int]string, error) {
 	var apiKind, timetableKey string // API 이름, API 키
 
 	// 학교 종류 별 API 이름, API 키 설정
@@ -40,8 +41,8 @@ func GetTimetable(schoolInfo map[string]string, grade string, class string, from
 	params.Add("KEY", timetableKey)
 	params.Add("ATPT_OFCDC_SC_CODE", schoolInfo["ATPT_OFCDC_SC_CODE"])
 	params.Add("SD_SCHUL_CODE", schoolInfo["SD_SCHUL_CODE"])
-	params.Add("GRADE", grade)
-	params.Add("CLASS_NM", class)
+	params.Add("GRADE", strconv.Itoa(grade))
+	params.Add("CLASS_NM", strconv.Itoa(class))
 	params.Add("TI_FROM_YMD", fromDate.Format("20060102"))
 	params.Add("TI_TO_YMD", toDate.Format("20060102"))
 
@@ -51,7 +52,7 @@ func GetTimetable(schoolInfo map[string]string, grade string, class string, from
 		return nil, err
 	}
 
-	timetable := map[string]map[string]string{}
+	timetable := map[string]map[int]string{}
 	rowCount, err := jsonparser.GetInt(resultJson, apiKind, "[0]", "head", "[0]", "list_total_count") // 수업 개수
 
 	// 수업이 없을 경우 에러 리턴
@@ -81,10 +82,11 @@ func GetTimetable(schoolInfo map[string]string, grade string, class string, from
 		_, exists := timetable[row["ALL_TI_YMD"]]
 
 		if !exists {
-			timetable[row["ALL_TI_YMD"]] = make(map[string]string)
+			timetable[row["ALL_TI_YMD"]] = make(map[int]string)
 		}
 
-		timetable[row["ALL_TI_YMD"]][row["PERIO"]] = content // 해당하는 날짜에 수업 내용 삽입
+		perio, _ := strconv.Atoi(row["PERIO"])
+		timetable[row["ALL_TI_YMD"]][perio] = content // 해당하는 날짜에 수업 내용 삽입
 	}
 
 	return timetable, nil

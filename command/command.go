@@ -27,8 +27,18 @@ var Commands = map[string]Command{
 		Description: "학교와 학급 등록",
 		Usage:       []string{"학교명", "학년", "반"},
 	},
+	"학사일정": {
+		Exec:        SchoolSchedule,
+		Description: "학사일정 출력",
+		Usage:       []string{"학교명", "날짜", "학년", "반"},
+	},
+	"시간표": {
+		Exec:        Timetable,
+		Description: "시간표 출력",
+		Usage:       []string{"학교명", "날짜", "학년", "반"},
+	},
 	"급식": {
-		Exec:        Diet,
+		Exec:        MealService,
 		Description: "급식 식단 출력",
 		Usage:       []string{"학교명", "날짜", "식사종류"},
 	},

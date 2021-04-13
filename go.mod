@@ -3,6 +3,7 @@ module SchoolDay
 go 1.15
 
 require (
+	github.com/beevik/ntp v0.3.0
 	github.com/buger/jsonparser v1.1.1
 	github.com/bwmarrin/discordgo v0.23.2
 	github.com/friendsofgo/errors v0.9.2
