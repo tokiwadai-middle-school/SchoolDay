@@ -5,30 +5,38 @@ import (
 	"SchoolDay/db"
 	"SchoolDay/embed"
 	"SchoolDay/extension"
-	"SchoolDay/models"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/beevik/ntp"
 	"github.com/bwmarrin/discordgo"
 )
 
-func Diet(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+func MealService(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	var schoolInfo map[string]string
 	var mealCode int
 	var err error
 
+	date, err := ntp.Time("0.beevik-ntp.pool.ntp.org")
+
+	if err != nil {
+		log.Warningln(err)
+		return
+	}
+
+	loc, _ := time.LoadLocation("Asia/Seoul")
+	date = date.In(loc)
+
 	schoolName := ""
-	date := time.Now()
 
 	for index, arg := range args {
 		if index == 0 {
 			continue
 		}
 
-		if extension.IsInt(arg) {
-			tempDate, err := time.Parse("20060102", strconv.Itoa(time.Now().Year())+arg)
+		if extension.IsValidNumber(arg) {
+			tempDate, err := time.Parse("20060102", strconv.Itoa(date.Year())+arg)
 
 			if err == nil {
 				date = tempDate
@@ -45,51 +53,29 @@ func Diet(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	}
 
 	if len(schoolName) == 0 {
-		var user *models.User
-		user, err = db.UserGet(m.Author.ID)
+		user, err := db.UserGet(m.Author.ID)
 
 		if err != nil {
-			_, err = s.ChannelMessageSend(m.ChannelID, "등록된 학교가 없습니다.")
-
-			if err != nil {
-				log.Warningln(err)
-			}
-
+			extension.ChannelMessageSend(s, m, "학교를 등록하지 않으셔서 학교 이름을 생략할 수 없습니다.")
 			return
 		}
-		schoolInfo, err = api.GetSchoolInfoByCode(user.ScCode)
+		schoolInfo, _ = api.GetSchoolInfoByCode(user.ScCode)
 	} else {
 		schoolInfo, err = api.GetSchoolInfoByName(schoolName)
-	}
-
-	if err != nil {
-		log.Warningln(err)
-		_, err := s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("학교를 찾을 수 없습니다: `%s`", schoolName))
 
 		if err != nil {
-			log.Warningln(err)
+			extension.ChannelMessageSend(s, m, "학교를 찾을 수 없습니다: `%s`", schoolName)
+			return
 		}
-
-		return
 	}
 
-	dailyDietEmbed, err := embed.GetDailyDietEmbed(schoolInfo, date, mealCode)
+	embed, err := embed.DailyMealServiceEmbed(schoolInfo, date, mealCode)
 
 	if err != nil {
 		mealName := extension.GetMealName(mealCode)
-
-		_, err := s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%d월 %d일 %s이 없습니다.", date.Month(), date.Day(), mealName))
-
-		if err != nil {
-			log.Warningln(err)
-		}
-
+		extension.ChannelMessageSend(s, m, "%d월 %d일 %s이 없습니다.", date.Month(), date.Day(), mealName)
 		return
 	}
 
-	_, err = s.ChannelMessageSendEmbed(m.ChannelID, dailyDietEmbed)
-
-	if err != nil {
-		log.Warningln(err)
-	}
+	extension.ChannelMessageSendEmbed(s, m, embed)
 }
