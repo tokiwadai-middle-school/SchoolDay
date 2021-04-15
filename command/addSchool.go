@@ -16,11 +16,11 @@ import (
 // scClass 				string
 // scheduleChannelId 	string
 // timetableChannelId 	string
-// dietChannelId
+// dietChannelId		string
 
 func AddSchool(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) < 4 {
-		extension.ChannelMessageSend(s, m, "사용법: %s학교등록 학교명 학년 반", "%")
+		extension.ChannelMessageSend(s, m, "사용법: %s 학교등록 학교명 학년 반", "%")
 		return
 	}
 
@@ -72,8 +72,9 @@ func AddSchool(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 
 	scheduleChannelId := null.String{}
 	timetableChannelId := null.String{}
+	dietChannelId := null.String{}
 
-	_, err = db.UserAdd(discordId, schoolInfo["SD_SCHUL_CODE"], scGrade, scClass, scheduleChannelId, timetableChannelId)
+	_, err = db.UserAdd(discordId, schoolInfo["SD_SCHUL_CODE"], scGrade, scClass, scheduleChannelId, timetableChannelId, dietChannelId)
 
 	if err != nil {
 		log.Fatalln(err)
