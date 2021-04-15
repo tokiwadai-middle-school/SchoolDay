@@ -128,7 +128,8 @@ func UserAdd(
 	scGrade null.Int8,
 	scClass null.Int8,
 	scheduleChannelId null.String,
-	timetableChannelId null.String) (interface{}, error) {
+	timetableChannelId null.String,
+	dietChannelId null.String) (interface{}, error) {
 
 	status, err := IsExists(discordId)
 	if err != nil {
@@ -148,6 +149,7 @@ func UserAdd(
 			ScClass:            scClass,
 			ScheduleChannelId:  scheduleChannelId,
 			TimetableChannelId: timetableChannelId,
+			DietChannelId: 		dietChannelId,
 		}
 		err = resp.Insert(ctx, db, boil.Infer())
 		if err != nil {
