@@ -42,4 +42,9 @@ var Commands = map[string]Command{
 		Description: "급식 식단 출력",
 		Usage:       []string{"학교명", "날짜", "식사종류"},
 	},
+	"수능": {
+		Exec:        Csat,
+		Description: "수능 D-Day 카운트",
+		Usage:       []string{""},
+	},
 }
