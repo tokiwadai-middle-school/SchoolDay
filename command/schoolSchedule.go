@@ -24,8 +24,7 @@ func SchoolSchedule(s *discordgo.Session, m *discordgo.MessageCreate, args []str
 		return
 	}
 
-	loc, _ := time.LoadLocation("Asia/Seoul")
-	date = date.In(loc)
+	date = date.Add(time.Hour * 9)
 
 	schoolName := ""
 
