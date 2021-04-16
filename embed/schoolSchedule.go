@@ -23,7 +23,6 @@ func DailySchoolScheduleEmbed(schoolInfo map[string]string, date time.Time, meal
 	embed.Color = 0x43b581
 	embed.Title = date.Format("1월 2일") + extension.GetKoreanWeekday(date)
 
-	// 각 급식 별 급식 시간대 코드와 식단
 	embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 		Name:  "학사일정",
 		Value: strings.Join(dailySchoolSchedule, "\n"),
