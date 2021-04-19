@@ -4,10 +4,9 @@ import (
 	"SchoolDay/api"
 	"SchoolDay/db"
 	"SchoolDay/extension"
-	"strconv"
-
 	"github.com/bwmarrin/discordgo"
 	"github.com/volatiletech/null/v8"
+	"strconv"
 )
 
 // discordId 			string
@@ -70,11 +69,23 @@ func AddSchool(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 	BcClass = int8(class)
 	scClass := null.Int8From(BcClass)
 
-	scheduleChannelId := null.String{}
-	timetableChannelId := null.String{}
-	dietChannelId := null.String{}
+	scheduleTime  := null.Time{}
+	timetableTime := null.Time{}
+	breakfastTime := null.Time{}
+	lunchTime     := null.Time{}
+	dinnerTime    := null.Time{}
 
-	_, err = db.UserAdd(discordId, schoolInfo["SD_SCHUL_CODE"], scGrade, scClass, scheduleChannelId, timetableChannelId, dietChannelId)
+	_, err = db.UserAdd(
+		discordId,
+		schoolInfo["SD_SCHUL_CODE"],
+		scGrade,
+		scClass,
+		scheduleTime,
+		timetableTime,
+		breakfastTime,
+		lunchTime,
+		dinnerTime,
+		)
 
 	if err != nil {
 		log.Fatalln(err)
