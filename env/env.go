@@ -14,11 +14,12 @@ var (
 	HisTimetableKey        string
 	MealServiceDietInfoKey string
 	BotToken               string
-	DBUser				   string // MySQL Username
-	DBPwd				   string // MySQL Password
-	DBUrl				   string // MySQL Server URL
-	DBEngine 			   string // MySQL DB Engine
-	DBName 				   string // MySQL DATABASE Name
+	CsatDate               string
+	DBUser                 string // MySQL Username
+	DBPwd                  string // MySQL Password
+	DBUrl                  string // MySQL Server URL
+	DBEngine               string // MySQL DB Engine
+	DBName                 string // MySQL DATABASE Name
 )
 
 // 환경 변수 처리
@@ -26,14 +27,17 @@ func init() {
 	exists := make(map[string]bool)
 
 	// 환경 변수 값, 환경 변수 존재 여부
+	BotToken, exists["BOT_TOKEN"] = os.LookupEnv("BOT_TOKEN") // 디스코드 봇 토큰
+	CsatDate, exists["CSAT_DATE"] = os.LookupEnv("CSAT_DATE") // 다음 수능 날짜
+
 	// API Credentials
-	BotToken, exists["BOT_TOKEN"] = os.LookupEnv("BOT_TOKEN")
 	SchoolInfoKey, exists["SCHOOL_INFO_KEY"] = os.LookupEnv("SCHOOL_INFO_KEY")
 	SchoolScheduleKey, exists["SCHOOL_SCHEDULE_KEY"] = os.LookupEnv("SCHOOL_SCHEDULE_KEY")
 	ElsTimetableKey, exists["ELS_TIME_TABLE_KEY"] = os.LookupEnv("ELS_TIME_TABLE_KEY")
 	MisTimetableKey, exists["MIS_TIME_TABLE_KEY"] = os.LookupEnv("MIS_TIME_TABLE_KEY")
 	HisTimetableKey, exists["HIS_TIME_TABLE_KEY"] = os.LookupEnv("HIS_TIME_TABLE_KEY")
 	MealServiceDietInfoKey, exists["MEAL_SERVICE_DIET_INFO_KEY"] = os.LookupEnv("MEAL_SERVICE_DIET_INFO_KEY")
+
 	// MySQL Credentials
 	DBUser, exists["MySQL_CREDENTIAL_USERNAME"] = os.LookupEnv("MySQL_CREDENTIAL_USERNAME")
 	DBPwd, exists["MySQL_CREDENTIAL_PASSWORD"] = os.LookupEnv("MySQL_CREDENTIAL_PASSWORD")
