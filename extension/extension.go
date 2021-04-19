@@ -10,7 +10,7 @@ import (
 	logHandler "github.com/sirupsen/logrus"
 )
 
-// 날짜에 해당하는 한국어 요일 반환
+// GetKoreanWeekday 날짜에 해당하는 한국어 요일 반환
 func GetKoreanWeekday(date time.Time) string {
 	var koreanWeekday string
 
@@ -34,7 +34,7 @@ func GetKoreanWeekday(date time.Time) string {
 	return "(" + koreanWeekday + ")"
 }
 
-// 날짜가 속하는 주의 순서 반환
+// GetWeekNumber 날짜가 속하는 주의 순서 반환
 func GetWeekNumber(date time.Time) int {
 	firstDay := time.Date(date.Year(), date.Month(), 1, 1, 1, 1, 1, time.UTC)
 
@@ -44,7 +44,7 @@ func GetWeekNumber(date time.Time) int {
 	return currentWeek - firstWeek
 }
 
-// 급식 시간대 코드에 해당하는 이름 반환
+// GetMealName 급식 시간대 코드에 해당하는 이름 반환
 func GetMealName(mealCode int) string {
 	var mealName string
 
@@ -65,7 +65,7 @@ func GetMealName(mealCode int) string {
 	return mealName
 }
 
-// 4자리 이하의 자연수인지 검사
+// IsValidNumber 4자리 이하의 자연수인지 검사
 func IsValidNumber(str string) bool {
 	var digitCheck = regexp.MustCompile(`^[0-9]+$`)
 	return digitCheck.MatchString(str) && len(str) <= 4
@@ -81,7 +81,7 @@ func Log() *logHandler.Entry {
 	return lo
 }
 
-// 메시지 전송 및 예외 처리
+// ChannelMessageSend 메시지 전송 및 예외 처리
 func ChannelMessageSend(s *discordgo.Session, m *discordgo.MessageCreate, format string, args ...interface{}) {
 	_, err := s.ChannelMessageSend(m.ChannelID, fmt.Sprintf(format, args...))
 
@@ -90,7 +90,7 @@ func ChannelMessageSend(s *discordgo.Session, m *discordgo.MessageCreate, format
 	}
 }
 
-// 임베드 전송 및 예외 처리
+// ChannelMessageSendEmbed 임베드 전송 및 예외 처리
 func ChannelMessageSendEmbed(s *discordgo.Session, m *discordgo.MessageCreate, embed *discordgo.MessageEmbed) {
 	_, err := s.ChannelMessageSendEmbed(m.ChannelID, embed)
 

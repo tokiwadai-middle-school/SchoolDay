@@ -24,34 +24,40 @@ import (
 
 // User is an object representing the database table.
 type User struct {
-	DiscordId          string      `boil:"discordId" json:"discordId" toml:"discordId" yaml:"discordId"`
-	ScCode             string      `boil:"scCode" json:"scCode" toml:"scCode" yaml:"scCode"`
-	ScGrade            null.Int8   `boil:"scGrade" json:"scGrade,omitempty" toml:"scGrade" yaml:"scGrade,omitempty"`
-	ScClass            null.Int8   `boil:"scClass" json:"scClass,omitempty" toml:"scClass" yaml:"scClass,omitempty"`
-	ScheduleChannelId  null.String `boil:"scheduleChannelId" json:"scheduleChannelId,omitempty" toml:"scheduleChannelId" yaml:"scheduleChannelId,omitempty"`
-	TimetableChannelId null.String `boil:"timetableChannelId" json:"timetableChannelId,omitempty" toml:"timetableChannelId" yaml:"timetableChannelId,omitempty"`
-	DietChannelId      null.String `boil:"dietChannelId" json:"dietChannelId,omitempty" toml:"dietChannelId" yaml:"dietChannelId,omitempty"`
+	DiscordId     string      `boil:"discordId" json:"discordId" toml:"discordId" yaml:"discordId"`
+	ScCode        string      `boil:"scCode" json:"scCode" toml:"scCode" yaml:"scCode"`
+	ScGrade       null.Int8   `boil:"scGrade" json:"scGrade,omitempty" toml:"scGrade" yaml:"scGrade,omitempty"`
+	ScClass       null.Int8   `boil:"scClass" json:"scClass,omitempty" toml:"scClass" yaml:"scClass,omitempty"`
+	ScheduleTime  null.Time `boil:"ScheduleTime" json:"ScheduleTime,omitempty" toml:"ScheduleTime" yaml:"ScheduleTime,omitempty"`
+	TimetableTime null.Time `boil:"TimetableTime" json:"TimetableTime,omitempty" toml:"TimetableTime" yaml:"TimetableTime,omitempty"`
+	BreakfastTime null.Time `boil:"BreakfastTime" json:"BreakfastTime,omitempty" toml:"BreakfastTime" yaml:"BreakfastTime,omitempty"`
+	LunchTime     null.Time `boil:"LunchTime" json:"LunchTime,omitempty" toml:"LunchTime" yaml:"LunchTime,omitempty"`
+	DinnerTime    null.Time `boil:"DinnerTime" json:"DinnerTime,omitempty" toml:"DinnerTime" yaml:"DinnerTime,omitempty"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var UserColumns = struct {
-	DiscordId          string
-	ScCode             string
-	ScGrade            string
-	ScClass            string
-	ScheduleChannelId  string
-	TimetableChannelId string
-	DietChannelId      string
+	DiscordId     string
+	ScCode        string
+	ScGrade       string
+	ScClass       string
+	ScheduleTime  string
+	TimetableTime string
+	BreakfastTime string
+	LunchTime     string
+	DinnerTime    string
 }{
-	DiscordId:          "discordId",
-	ScCode:             "scCode",
-	ScGrade:            "scGrade",
-	ScClass:            "scClass",
-	ScheduleChannelId:  "scheduleChannelId",
-	TimetableChannelId: "timetableChannelId",
-	DietChannelId:      "dietChannelId",
+	DiscordId:     "discordId",
+	ScCode:        "scCode",
+	ScGrade:       "scGrade",
+	ScClass:       "scClass",
+	ScheduleTime:  "ScheduleTime",
+	TimetableTime: "TimetableTime",
+	BreakfastTime: "BreakfastTime",
+	LunchTime:     "LunchTime",
+	DinnerTime:    "DinnerTime",
 }
 
 // Generated where
@@ -126,21 +132,25 @@ func (w whereHelpernull_String) GTE(x null.String) qm.QueryMod {
 }
 
 var UserWhere = struct {
-	DiscordId          whereHelperstring
-	ScCode             whereHelperstring
-	ScGrade            whereHelpernull_Int8
-	ScClass            whereHelpernull_Int8
-	ScheduleChannelId  whereHelpernull_String
-	TimetableChannelId whereHelpernull_String
-	DietChannelId      whereHelpernull_String
+	DiscordId     whereHelperstring
+	ScCode        whereHelperstring
+	ScGrade       whereHelpernull_Int8
+	ScClass       whereHelpernull_Int8
+	ScheduleTime  whereHelpernull_String
+	TimetableTime whereHelpernull_String
+	BreakfastTime whereHelpernull_String
+	LunchTime     whereHelpernull_String
+	DinnerTime    whereHelpernull_String
 }{
-	DiscordId:          whereHelperstring{field: "`user`.`discordId`"},
-	ScCode:             whereHelperstring{field: "`user`.`scCode`"},
-	ScGrade:            whereHelpernull_Int8{field: "`user`.`scGrade`"},
-	ScClass:            whereHelpernull_Int8{field: "`user`.`scClass`"},
-	ScheduleChannelId:  whereHelpernull_String{field: "`user`.`scheduleChannelId`"},
-	TimetableChannelId: whereHelpernull_String{field: "`user`.`timetableChannelId`"},
-	DietChannelId:      whereHelpernull_String{field: "`user`.`dietChannelId`"},
+	DiscordId:     whereHelperstring{field: "`user`.`discordId`"},
+	ScCode:        whereHelperstring{field: "`user`.`scCode`"},
+	ScGrade:       whereHelpernull_Int8{field: "`user`.`scGrade`"},
+	ScClass:       whereHelpernull_Int8{field: "`user`.`scClass`"},
+	ScheduleTime:  whereHelpernull_String{field: "`user`.`ScheduleTime`"},
+	TimetableTime: whereHelpernull_String{field: "`user`.`TimetableTime`"},
+	BreakfastTime: whereHelpernull_String{field: "`user`.`BreakfastTime`"},
+	LunchTime:     whereHelpernull_String{field: "`user`.`LunchTime`"},
+	DinnerTime:    whereHelpernull_String{field: "`user`.`DinnerTime`"},
 }
 
 // UserRels is where relationship names are stored.
@@ -160,8 +170,8 @@ func (*userR) NewStruct() *userR {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"discordId", "scCode", "scGrade", "scClass", "scheduleChannelId", "timetableChannelId", "dietChannelId"}
-	userColumnsWithoutDefault = []string{"discordId", "scCode", "scGrade", "scClass", "scheduleChannelId", "timetableChannelId", "dietChannelId"}
+	userAllColumns            = []string{"discordId", "scCode", "scGrade", "scClass", "ScheduleTime", "TimetableTime", "BreakfastTime", "LunchTime", "DinnerTime"}
+	userColumnsWithoutDefault = []string{"discordId", "scCode", "scGrade", "scClass", "ScheduleTime", "TimetableTime", "BreakfastTime", "LunchTime", "DinnerTime"}
 	userColumnsWithDefault    = []string{}
 	userPrimaryKeyColumns     = []string{"discordId"}
 )

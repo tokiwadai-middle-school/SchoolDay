@@ -31,6 +31,7 @@ SchoolDay
 - **Linux** **/** **Unix**
     ```zsh
     export BOT_TOKEN="<Your discord bot token>"
+    export CSAT_DATE="<The day of the K-SAT>"
     export SCHOOL_INFO_KEY="<Your API key>"
     export SCHOOL_SCHEDULE_KEY="<Your API key>"
     export ELS_TIME_TABLE_KEY="<Your API key>"
@@ -42,6 +43,7 @@ SchoolDay
 - **Microsoft Windows 10 with Powershell**
     ```powershell
     $Env:BOT_TOKEN = "<Your discord bot token>"
+    $Env:CSAT_DATE = "<The day of the K-SAT>"
     $Env:SCHOOL_INFO_KEY = "<Your API key>"
     $Env:SCHOOL_SCHEDULE_KEY = "<Your API key>"
     $Env:ELS_TIME_TABLE_KEY = "<Your API key>"

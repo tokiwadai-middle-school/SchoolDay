@@ -10,7 +10,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-// 하루 치 시간표 embed
+// DailyTimetableEmbed 하루 치 시간표 embed
 func DailyTimetableEmbed(schoolInfo map[string]string, date time.Time, grade int, class int) (*discordgo.MessageEmbed, error) {
 	timetable, err := api.GetTimetable(schoolInfo, date, date, grade, class)
 
