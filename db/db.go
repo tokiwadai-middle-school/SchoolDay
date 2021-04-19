@@ -5,7 +5,6 @@ import (
 	"SchoolDay/extension"
 	"SchoolDay/models"
 	"context"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/volatiletech/null/v8"
@@ -73,17 +72,33 @@ func dbQuery(db dbInfo, query string) (count int) {
 // scheduleChannelId 	string
 // timetableChannelId 	string
 // dietChannelId 		string
-/*
+
+//go:generate sqlboiler
 type User struct {
 	DiscordId          string
-	ScCode             string `gorm:"not null"`
-	ScGrade            string
-	ScClass            string
-	scheduleChannelId  string
-	timetableChannelId string
-	dietChannelId      string
+	ScCode             string
+	ScGrade            null.Int8
+	ScClass            null.Int8
+	ScheduleTime 	   null.Time
+	TimetableTime      null.Time
+	BreakfastTime      null.Time
+	LunchTime          null.Time
+	DinnerTime         null.Time
 }
-*/
+
+// CREATE TABLE user (
+//	discordId CHAR(18) PRIMARY KEY,
+//	scCode CHAR(7) NOT NULL,
+//	scGrade TINYINT,
+//	scClass TINYINT,
+//	ScheduleTime 	Time,
+//	TimetableTime   Time,
+//	BreakfastTime   Time,
+//	LunchTime       Time,
+//	DinnerTime      Time
+// );
+
+
 
 var schema = `
 CREATE TABLE user ( 
@@ -91,9 +106,11 @@ CREATE TABLE user (
 	scCode CHAR(7) NOT NULL, 
 	scGrade TINYINT, 
 	scClass TINYINT, 
-	scheduleChannelId CHAR(18), 
-	timetableChannelId CHAR(18), 
-	dietChannelId CHAR(18)
+	ScheduleTime 	   time.Time,
+	TimetableTime      time.Time,
+	BreakfastTime      time.Time,
+	LunchTime          time.Time,
+	DinnerTime         time.Time
 );
 `
 
@@ -127,9 +144,11 @@ func UserAdd(
 	scCode string,
 	scGrade null.Int8,
 	scClass null.Int8,
-	scheduleChannelId null.String,
-	timetableChannelId null.String,
-	dietChannelId null.String) (interface{}, error) {
+	scheduleTime null.Time,
+	timeTableTime null.Time,
+	breakfastTime null.Time,
+	lunchTime null.Time,
+	dinnerTime null.Time) (interface{}, error) {
 
 	status, err := IsExists(discordId)
 	if err != nil {
@@ -147,9 +166,11 @@ func UserAdd(
 			ScCode:             scCode,
 			ScGrade:            scGrade,
 			ScClass:            scClass,
-			ScheduleChannelId:  scheduleChannelId,
-			TimetableChannelId: timetableChannelId,
-			DietChannelId: 		dietChannelId,
+			ScheduleTime: 		scheduleTime,
+			TimetableTime:		timeTableTime,
+			BreakfastTime: 		breakfastTime,
+			LunchTime: 			lunchTime,
+			DinnerTime:			dinnerTime,
 		}
 		err = resp.Insert(ctx, db, boil.Infer())
 		if err != nil {
@@ -171,3 +192,32 @@ func UserGet(discordId string) (*models.User, error) {
 
 	return models.FindUser(ctx, db, discordId)
 }
+
+func UserUpdate(discordId string, args User) (bool, error) {
+	db, err := Database()
+	if err != nil {
+		return false, err
+	}
+	ctx := context.Background()
+	userResult, err := UserGet(discordId)
+	if err != nil {
+		return false, err
+	}
+
+	userResult.ScCode = args.ScCode
+	userResult.ScGrade = args.ScGrade
+	userResult.ScClass = args.ScClass
+	userResult.ScheduleTime = args.ScheduleTime
+	userResult.TimetableTime = args.TimetableTime
+	userResult.BreakfastTime = args.BreakfastTime
+	userResult.LunchTime = args.LunchTime
+	userResult.DinnerTime = args.DinnerTime
+
+	_, err = userResult.Update(ctx, db, boil.Infer())
+
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+

@@ -4,7 +4,9 @@
 package models
 
 var TableNames = struct {
-	User string
+	User  string
+	Users string
 }{
-	User: "user",
+	User:  "user",
+	Users: "users",
 }
