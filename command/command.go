@@ -42,6 +42,11 @@ var Commands = map[string]Command{
 		Description: "급식 식단 출력",
 		Usage:       []string{"학교명", "날짜", "식사종류"},
 	},
+	"학사일정알림": {
+		Exec:        scheduleNotice,
+		Description: "학사 일정 자동 알림",
+		Usage:       []string{"HH:MM"},
+	},
 	"수능": {
 		Exec:        Csat,
 		Description: "수능 D-Day 카운트",
