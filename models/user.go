@@ -28,11 +28,11 @@ type User struct {
 	ScCode        string      `boil:"scCode" json:"scCode" toml:"scCode" yaml:"scCode"`
 	ScGrade       null.Int8   `boil:"scGrade" json:"scGrade,omitempty" toml:"scGrade" yaml:"scGrade,omitempty"`
 	ScClass       null.Int8   `boil:"scClass" json:"scClass,omitempty" toml:"scClass" yaml:"scClass,omitempty"`
-	ScheduleTime  null.Time `boil:"ScheduleTime" json:"ScheduleTime,omitempty" toml:"ScheduleTime" yaml:"ScheduleTime,omitempty"`
-	TimetableTime null.Time `boil:"TimetableTime" json:"TimetableTime,omitempty" toml:"TimetableTime" yaml:"TimetableTime,omitempty"`
-	BreakfastTime null.Time `boil:"BreakfastTime" json:"BreakfastTime,omitempty" toml:"BreakfastTime" yaml:"BreakfastTime,omitempty"`
-	LunchTime     null.Time `boil:"LunchTime" json:"LunchTime,omitempty" toml:"LunchTime" yaml:"LunchTime,omitempty"`
-	DinnerTime    null.Time `boil:"DinnerTime" json:"DinnerTime,omitempty" toml:"DinnerTime" yaml:"DinnerTime,omitempty"`
+	ScheduleTime  null.String `boil:"ScheduleTime" json:"ScheduleTime,omitempty" toml:"ScheduleTime" yaml:"ScheduleTime,omitempty"`
+	TimetableTime null.String `boil:"TimetableTime" json:"TimetableTime,omitempty" toml:"TimetableTime" yaml:"TimetableTime,omitempty"`
+	BreakfastTime null.String `boil:"BreakfastTime" json:"BreakfastTime,omitempty" toml:"BreakfastTime" yaml:"BreakfastTime,omitempty"`
+	LunchTime     null.String `boil:"LunchTime" json:"LunchTime,omitempty" toml:"LunchTime" yaml:"LunchTime,omitempty"`
+	DinnerTime    null.String `boil:"DinnerTime" json:"DinnerTime,omitempty" toml:"DinnerTime" yaml:"DinnerTime,omitempty"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
