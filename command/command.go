@@ -43,28 +43,8 @@ var Commands = map[string]Command{
 		Usage:       []string{"학교명", "날짜", "식사종류"},
 	},
 	"학사일정알림": {
-		Exec:        ScheduleNotice,
-		Description: "학사일정 자동 알림",
-		Usage:       []string{"HH:MM"},
-	},
-	"시간표알림": {
-		Exec:        TimetableNotice,
-		Description: "시간표 자동 알림",
-		Usage:       []string{"HH:MM"},
-	},
-	"조식알림": {
-		Exec:        BreakfastNotice,
-		Description: "조식 자동 알림",
-		Usage:       []string{"HH:MM"},
-	},
-	"중식알림": {
-		Exec:        LunchNotice,
-		Description: "중식 자동 알림",
-		Usage:       []string{"HH:MM"},
-	},
-	"석식알림": {
-		Exec:        DinnerNotice,
-		Description: "석식 자동 알림",
+		Exec:        scheduleNotice,
+		Description: "학사 일정 자동 알림",
 		Usage:       []string{"HH:MM"},
 	},
 	"수능": {

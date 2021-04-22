@@ -5,13 +5,11 @@ import (
 	"SchoolDay/extension"
 	"SchoolDay/models"
 	"context"
-	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
-	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 var log = extension.Log()
@@ -36,11 +34,11 @@ type User struct {
 	ScCode        string
 	ScGrade       null.Int8
 	ScClass       null.Int8
-	ScheduleTime  null.String
-	TimetableTime null.String
-	BreakfastTime null.String
-	LunchTime     null.String
-	DinnerTime    null.String
+	ScheduleTime  null.Time
+	TimetableTime null.Time
+	BreakfastTime null.Time
+	LunchTime     null.Time
+	DinnerTime    null.Time
 }
 
 var schema = `
@@ -49,11 +47,11 @@ CREATE TABLE user (
 	scCode 			CHAR(7)		NOT NULL, 
 	scGrade			TINYINT,
 	scClass			TINYINT,
-	ScheduleTime 	CHAR(5),
-	TimetableTime   CHAR(5),
-	BreakfastTime	CHAR(5),
-	LunchTime       CHAR(5),
-	DinnerTime      CHAR(5)
+	ScheduleTime 	time.Time,
+	TimetableTime   time.Time,
+	BreakfastTime	time.Time,
+	LunchTime       time.Time,
+	DinnerTime      time.Time
 );
 `
 
@@ -100,11 +98,11 @@ func UserAdd(discordId string, scCode string, scGrade null.Int8, scClass null.In
 			ScCode:        scCode,
 			ScGrade:       scGrade,
 			ScClass:       scClass,
-			ScheduleTime:  null.String{},
-			TimetableTime: null.String{},
-			BreakfastTime: null.String{},
-			LunchTime:     null.String{},
-			DinnerTime:    null.String{},
+			ScheduleTime:  null.Time{},
+			TimetableTime: null.Time{},
+			BreakfastTime: null.Time{},
+			LunchTime:     null.Time{},
+			DinnerTime:    null.Time{},
 		}
 		err = resp.Insert(ctx, db, boil.Infer())
 		if err != nil {
@@ -124,18 +122,6 @@ func UserGet(discordId string) (*models.User, error) {
 
 	ctx := context.Background()
 	return models.FindUser(ctx, db, discordId)
-}
-
-func UserGetAll(format string, args ...interface{}) (models.UserSlice, error) {
-	db, err := Database()
-
-	if err != nil {
-		return nil, err
-	}
-
-	ctx := context.Background()
-	whereClause := fmt.Sprintf(format, args...)
-	return models.Users(qm.Where(whereClause)).All(ctx, db)
 }
 
 func UserUpdate(discordId string, user *models.User) (bool, error) {

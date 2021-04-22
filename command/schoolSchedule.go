@@ -8,22 +8,23 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/beevik/ntp"
 	"github.com/bwmarrin/discordgo"
 )
 
 func SchoolSchedule(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
-	channelId := m.ChannelID
-	discordId := m.Author.ID
-
 	var schoolInfo map[string]string
+	var mealCode int
 	var err error
 
-	date, err := extension.NtpTimeKorea()
+	date, err := ntp.Time("0.beevik-ntp.pool.ntp.org")
 
 	if err != nil {
 		log.Warningln(err)
 		return
 	}
+
+	date = date.Add(time.Hour * 9)
 
 	schoolName := ""
 
@@ -44,10 +45,10 @@ func SchoolSchedule(s *discordgo.Session, m *discordgo.MessageCreate, args []str
 	}
 
 	if len(schoolName) == 0 {
-		user, err := db.UserGet(discordId)
+		user, err := db.UserGet(m.Author.ID)
 
 		if err != nil {
-			extension.ChannelMessageSend(s, channelId, "학교를 등록하지 않으셔서 학교 이름을 생략할 수 없습니다.")
+			extension.ChannelMessageSend(s, m, "학교를 등록하지 않으셔서 학교 이름을 생략할 수 없습니다.")
 			return
 		}
 		schoolInfo, _ = api.GetSchoolInfoByCode(user.ScCode)
@@ -55,17 +56,17 @@ func SchoolSchedule(s *discordgo.Session, m *discordgo.MessageCreate, args []str
 		schoolInfo, err = api.GetSchoolInfoByName(schoolName)
 
 		if err != nil {
-			extension.ChannelMessageSend(s, channelId, "학교를 찾을 수 없습니다: `%s`", schoolName)
+			extension.ChannelMessageSend(s, m, "학교를 찾을 수 없습니다: `%s`", schoolName)
 			return
 		}
 	}
 
-	embed, err := embed.SchoolScheduleEmbed(schoolInfo, date)
+	embed, err := embed.DailySchoolScheduleEmbed(schoolInfo, date, mealCode)
 
 	if err != nil {
-		extension.ChannelMessageSend(s, channelId, "%d월 %d일 학사일정이 없습니다.", date.Month(), date.Day())
+		extension.ChannelMessageSend(s, m, "%d월 %d일 학사일정이 없습니다.", date.Month(), date.Day())
 		return
 	}
 
-	extension.ChannelMessageSendEmbed(s, channelId, embed)
+	extension.ChannelMessageSendEmbed(s, m, embed)
 }
