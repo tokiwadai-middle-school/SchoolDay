@@ -10,24 +10,24 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/beevik/ntp"
 	"github.com/bwmarrin/discordgo"
 )
 
 func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+	channelId := m.ChannelID
+	discordId := m.Author.ID
+
 	var schoolInfo map[string]string
 
 	schoolName := ""
 	grade, class := 0, 0
 
-	date, err := ntp.Time("0.beevik-ntp.pool.ntp.org")
+	date, err := extension.NtpTimeKorea()
 
 	if err != nil {
 		log.Warningln(err)
 		return
 	}
-
-	date = date.Add(time.Hour * 9)
 
 	for index, arg := range args {
 		if index == 0 {
@@ -55,10 +55,10 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 
 	if len(schoolName) == 0 || grade == 0 || class == 0 {
 		var user *models.User
-		user, err = db.UserGet(m.Author.ID)
+		user, err = db.UserGet(discordId)
 
 		if err != nil {
-			_, err = s.ChannelMessageSend(m.ChannelID, "학교를 등록하지 않으셔서 학교 이름, 학년, 반을 생략할 수 없습니다.")
+			_, err = s.ChannelMessageSend(channelId, "학교를 등록하지 않으셔서 학교 이름, 학년, 반을 생략할 수 없습니다.")
 
 			if err != nil {
 				log.Warningln(err)
@@ -84,7 +84,7 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 
 	if err != nil {
 		log.Warningln(err)
-		_, err := s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("학교를 찾을 수 없습니다: `%s`", schoolName))
+		_, err := s.ChannelMessageSend(channelId, fmt.Sprintf("학교를 찾을 수 없습니다: `%s`", schoolName))
 
 		if err != nil {
 			log.Warningln(err)
@@ -93,10 +93,10 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 		return
 	}
 
-	embed, err := embed.DailyTimetableEmbed(schoolInfo, date, grade, class)
+	embed, err := embed.TimetableEmbed(schoolInfo, date, grade, class)
 
 	if err != nil {
-		_, err := s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("%d월 %d일 %d학년 %d반 수업이 없습니다.", date.Month(), date.Day(), grade, class))
+		_, err := s.ChannelMessageSend(channelId, fmt.Sprintf("%d월 %d일 %d학년 %d반 수업이 없습니다.", date.Month(), date.Day(), grade, class))
 
 		if err != nil {
 			log.Warningln(err)
@@ -105,7 +105,7 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 		return
 	}
 
-	_, err = s.ChannelMessageSendEmbed(m.ChannelID, embed)
+	_, err = s.ChannelMessageSendEmbed(channelId, embed)
 
 	if err != nil {
 		log.Warningln(err)

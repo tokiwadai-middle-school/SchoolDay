@@ -10,8 +10,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-// DailyMealServiceEmbed 하루 치 급식 embed
-func DailyMealServiceEmbed(schoolInfo map[string]string, date time.Time, mealCode int) (*discordgo.MessageEmbed, error) {
+func MealServiceEmbed(schoolInfo map[string]string, date time.Time, mealCode int) (*discordgo.MessageEmbed, error) {
 	mealServiceDietInfo, err := api.GetMealServiceDietInfo(schoolInfo, date, date, mealCode)
 
 	if err != nil {
