@@ -5,12 +5,13 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/beevik/ntp"
 	"github.com/bwmarrin/discordgo"
 	"github.com/mattn/go-colorable"
 	logHandler "github.com/sirupsen/logrus"
 )
 
-// GetKoreanWeekday 날짜에 해당하는 한국어 요일 반환
+// 날짜에 해당하는 한국어 요일 반환
 func GetKoreanWeekday(date time.Time) string {
 	var koreanWeekday string
 
@@ -34,17 +35,7 @@ func GetKoreanWeekday(date time.Time) string {
 	return "(" + koreanWeekday + ")"
 }
 
-// GetWeekNumber 날짜가 속하는 주의 순서 반환
-func GetWeekNumber(date time.Time) int {
-	firstDay := time.Date(date.Year(), date.Month(), 1, 1, 1, 1, 1, time.UTC)
-
-	_, currentWeek := date.ISOWeek()
-	_, firstWeek := firstDay.ISOWeek()
-
-	return currentWeek - firstWeek
-}
-
-// GetMealName 급식 시간대 코드에 해당하는 이름 반환
+// 급식 시간대 코드에 해당하는 이름 반환
 func GetMealName(mealCode int) string {
 	var mealName string
 
@@ -65,10 +56,45 @@ func GetMealName(mealCode int) string {
 	return mealName
 }
 
-// IsValidNumber 4자리 이하의 자연수인지 검사
+// 4자리 이하의 자연수인지 검사
 func IsValidNumber(str string) bool {
 	var digitCheck = regexp.MustCompile(`^[0-9]+$`)
 	return digitCheck.MatchString(str) && len(str) <= 4
+}
+
+// 메시지 전송 및 예외 처리
+func ChannelMessageSend(s *discordgo.Session, channelId string, format string, args ...interface{}) {
+	_, err := s.ChannelMessageSend(channelId, fmt.Sprintf(format, args...))
+
+	if err != nil {
+		Log().Warningln(err)
+	}
+}
+
+// 임베드 전송 및 예외 처리
+func ChannelMessageSendEmbed(s *discordgo.Session, channelId string, embed *discordgo.MessageEmbed) {
+	_, err := s.ChannelMessageSendEmbed(channelId, embed)
+
+	if err != nil {
+		Log().Warningln(err)
+	}
+}
+
+// ntp 서버에서 현재 시각 가져와 한국 시간대로 변경
+func NtpTimeKorea() (time.Time, error) {
+	date, err := ntp.Time("time.windows.com")
+
+	if err != nil {
+		return date, err
+	}
+
+	loc, err := time.LoadLocation("")
+
+	if err != nil {
+		return date, err
+	}
+
+	return date.In(loc).Add(time.Hour * 9), err
 }
 
 func Log() *logHandler.Entry {
@@ -79,22 +105,4 @@ func Log() *logHandler.Entry {
 	logHandler.SetLevel(logHandler.DebugLevel)
 	var lo = logHandler.WithFields(logHandler.Fields{})
 	return lo
-}
-
-// ChannelMessageSend 메시지 전송 및 예외 처리
-func ChannelMessageSend(s *discordgo.Session, m *discordgo.MessageCreate, format string, args ...interface{}) {
-	_, err := s.ChannelMessageSend(m.ChannelID, fmt.Sprintf(format, args...))
-
-	if err != nil {
-		Log().Warningln(err)
-	}
-}
-
-// ChannelMessageSendEmbed 임베드 전송 및 예외 처리
-func ChannelMessageSendEmbed(s *discordgo.Session, m *discordgo.MessageCreate, embed *discordgo.MessageEmbed) {
-	_, err := s.ChannelMessageSendEmbed(m.ChannelID, embed)
-
-	if err != nil {
-		Log().Warningln(err)
-	}
 }
