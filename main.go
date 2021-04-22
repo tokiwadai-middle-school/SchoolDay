@@ -63,7 +63,7 @@ func NotifyEveryMinute(s *discordgo.Session) {
 			schoolInfo, _ := api.GetSchoolInfoByCode(user.ScCode)
 
 			if user.ScheduleTime == dateStr {
-				embed, err := embed.DailySchoolScheduleEmbed(schoolInfo, date)
+				embed, err := embed.SchoolScheduleEmbed(schoolInfo, date)
 
 				if err == nil {
 					extension.ChannelMessageSendEmbed(s, channel.ID, embed)
@@ -71,7 +71,7 @@ func NotifyEveryMinute(s *discordgo.Session) {
 			}
 
 			if user.TimetableTime == dateStr {
-				embed, err := embed.DailyTimetableEmbed(schoolInfo, date, int(user.ScGrade.Int8), int(user.ScClass.Int8))
+				embed, err := embed.TimetableEmbed(schoolInfo, date, int(user.ScGrade.Int8), int(user.ScClass.Int8))
 
 				if err == nil {
 					extension.ChannelMessageSendEmbed(s, channel.ID, embed)
@@ -79,7 +79,7 @@ func NotifyEveryMinute(s *discordgo.Session) {
 			}
 
 			if user.BreakfastTime == dateStr {
-				embed, err := embed.DailyMealServiceEmbed(schoolInfo, date, 1)
+				embed, err := embed.MealServiceEmbed(schoolInfo, date, 1)
 
 				if err == nil {
 					extension.ChannelMessageSendEmbed(s, channel.ID, embed)
@@ -87,7 +87,7 @@ func NotifyEveryMinute(s *discordgo.Session) {
 			}
 
 			if user.LunchTime == dateStr {
-				embed, err := embed.DailyMealServiceEmbed(schoolInfo, date, 2)
+				embed, err := embed.MealServiceEmbed(schoolInfo, date, 2)
 
 				if err == nil {
 					extension.ChannelMessageSendEmbed(s, channel.ID, embed)
@@ -95,7 +95,7 @@ func NotifyEveryMinute(s *discordgo.Session) {
 			}
 
 			if user.DinnerTime == dateStr {
-				embed, err := embed.DailyMealServiceEmbed(schoolInfo, date, 3)
+				embed, err := embed.MealServiceEmbed(schoolInfo, date, 3)
 
 				if err == nil {
 					extension.ChannelMessageSendEmbed(s, channel.ID, embed)
