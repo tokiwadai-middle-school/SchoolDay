@@ -43,7 +43,7 @@ func HelpEmbed(args []string) (*discordgo.MessageEmbed, error) {
 			noticeType := args[1][:len(args[1])-len("알림")]
 
 			fieldName = "%" + args[1] + " 시각"
-			fieldValue = fmt.Sprintf("봇이 매일 지정한 시각에 %s 알려줍니다.\n알림을 중지하려면 `>%s`을 입력하세요.", extension.AddKoreanObjectParticle(noticeType), args[1])
+			fieldValue = fmt.Sprintf("봇이 매일 지정한 시각에 %s 알려줍니다.\n알림을 중지하려면 `%s`을 입력하세요.", "%"+extension.AddKoreanObjectParticle(noticeType), args[1])
 
 		default:
 			return nil, errors.New("")
@@ -74,7 +74,7 @@ func HelpEmbed(args []string) (*discordgo.MessageEmbed, error) {
 			Value: fieldValue,
 		})
 	} else {
-		embed.Description = "`>도움말 [명령어]`로 자세한 설명을 보실 수 있습니다."
+		embed.Description = "`%도움말 [명령어]`로 자세한 설명을 보실 수 있습니다."
 
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 			Name:  "명령어",
