@@ -23,12 +23,12 @@ func TimetableNotice(s *discordgo.Session, m *discordgo.MessageCreate, args []st
 			if err != nil {
 				log.Fatalln(err)
 
-				extension.ChannelMessageSend(s, channelId, "알림 삭제에 실패했습니다.")
+				extension.ChannelMessageSend(s, channelId, "알림을 중지하지 못했습니다.")
 				return
 			}
-			extension.ChannelMessageSend(s, channelId, "더 이상 시간표 알림을 받지 않습니다.")
+			extension.ChannelMessageSend(s, channelId, "더 이상 알림을 받지 않습니다.")
 		} else {
-			extension.ChannelMessageSend(s, channelId, "사용법: `%s시간표알림 HH:MM`", "%")
+			extension.ChannelMessageSend(s, channelId, "알림을 받고 계시지 않습니다.")
 		}
 		return
 	}
@@ -36,14 +36,14 @@ func TimetableNotice(s *discordgo.Session, m *discordgo.MessageCreate, args []st
 	timetableTime, err := time.Parse("0615:04", "01"+args[1])
 
 	if err != nil {
-		extension.ChannelMessageSend(s, channelId, "시각 입력이 잘못됐습니다: `%s`", args[1])
+		extension.ChannelMessageSend(s, channelId, "시각을 잘못 입력하셨습니다: `%s`", args[1])
 		return
 	}
 
 	user, err := db.UserGet(discordId)
 
 	if err != nil {
-		extension.ChannelMessageSend(s, channelId, "학교 등록을 먼저 하세요.")
+		extension.ChannelMessageSend(s, channelId, "학교 정보를 먼저 등록하세요.")
 		return
 	}
 
@@ -53,9 +53,9 @@ func TimetableNotice(s *discordgo.Session, m *discordgo.MessageCreate, args []st
 	if err != nil {
 		log.Fatalln(err)
 
-		extension.ChannelMessageSend(s, channelId, "알림 추가에 실패했습니다.")
+		extension.ChannelMessageSend(s, channelId, "알림을 설정하지 못했습니다.")
 		return
 	}
 
-	extension.ChannelMessageSend(s, channelId, "등록 완료: `%d시%d분`", timetableTime.Hour(), timetableTime.Minute())
+	extension.ChannelMessageSend(s, channelId, "등록 완료: `%s`", timetableTime.Format("15시04분"))
 }
