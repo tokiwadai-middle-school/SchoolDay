@@ -32,12 +32,10 @@ func SchoolSchedule(s *discordgo.Session, m *discordgo.MessageCreate, args []str
 			continue
 		}
 
-		if extension.IsValidNumber(arg) {
-			tempDate, err := time.Parse("200601/02", strconv.Itoa(date.Year())+arg)
+		tempDate, err := time.Parse("200601/02", strconv.Itoa(date.Year())+arg)
 
-			if err == nil {
-				date = tempDate
-			}
+		if err == nil {
+			date = tempDate
 		} else if len(schoolName) == 0 {
 			schoolName = arg
 		}
