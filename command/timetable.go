@@ -38,14 +38,10 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 
 		if err == nil {
 			date = tempDate
-		} else if extension.IsValidNumber(arg) {
-			argNum, _ := strconv.Atoi(arg)
-
-			if argNum >= 1 && argNum <= 6 && grade == 0 {
-				grade = argNum
-			} else if argNum >= 1 && argNum <= 16 && class == 0 {
-				class = argNum
-			}
+		} else if extension.IsGradeNumber(arg) && grade == 0 {
+			grade, _ = strconv.Atoi(arg)
+		} else if extension.IsClassNumber(arg) && class == 0 {
+			class, _ = strconv.Atoi(arg)
 		} else if len(schoolName) == 0 {
 			schoolName = arg
 		}
