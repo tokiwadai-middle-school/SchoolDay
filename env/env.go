@@ -18,7 +18,6 @@ var (
 	DBUser                 string // MySQL Username
 	DBPwd                  string // MySQL Password
 	DBUrl                  string // MySQL Server URL
-	DBEngine               string // MySQL DB Engine
 	DBName                 string // MySQL DATABASE Name
 )
 
