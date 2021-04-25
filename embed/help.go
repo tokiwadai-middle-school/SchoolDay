@@ -42,7 +42,7 @@ func HelpEmbed(args []string) (*discordgo.MessageEmbed, error) {
 		case "학사일정알림", "시간표알림", "조식알림", "중식알림", "석식알림":
 			noticeType := args[1][:len(args[1])-len("알림")]
 
-			fieldName = "%" + args[1] + " 시각"
+			fieldName = "%" + args[1] + " [시각]"
 			fieldValue = fmt.Sprintf("봇이 매일 지정한 시각에 %s 알려줍니다.\n알림을 중지하려면 `%s`을 입력하세요.", extension.AddKoreanObjectParticle(noticeType), "%"+args[1])
 
 		default:
