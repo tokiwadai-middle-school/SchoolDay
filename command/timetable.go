@@ -42,7 +42,7 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 			} else if argNum >= 1 && argNum <= 16 {
 				class = argNum
 			} else {
-				tempDate, err := time.Parse("20060102", strconv.Itoa(date.Year())+arg)
+				tempDate, err := time.Parse("200601/02", strconv.Itoa(date.Year())+arg)
 
 				if err == nil {
 					date = tempDate
@@ -58,7 +58,7 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 		user, err = db.UserGet(discordId)
 
 		if err != nil {
-			_, err = s.ChannelMessageSend(channelId, "학교를 등록하지 않으셔서 학교 이름, 학년, 반을 생략할 수 없습니다.")
+			_, err = s.ChannelMessageSend(channelId, "학교 정보를 등록하지 않으셔서 교명과 학년, 반을 생략하실 수 없습니다.")
 
 			if err != nil {
 				log.Warningln(err)

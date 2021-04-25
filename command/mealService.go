@@ -35,7 +35,7 @@ func MealService(s *discordgo.Session, m *discordgo.MessageCreate, args []string
 		}
 
 		if extension.IsValidNumber(arg) {
-			tempDate, err := time.Parse("20060102", strconv.Itoa(date.Year())+arg)
+			tempDate, err := time.Parse("200601/02", strconv.Itoa(date.Year())+arg)
 
 			if err == nil {
 				date = tempDate
@@ -55,7 +55,7 @@ func MealService(s *discordgo.Session, m *discordgo.MessageCreate, args []string
 		user, err := db.UserGet(discordId)
 
 		if err != nil {
-			extension.ChannelMessageSend(s, channelId, "학교를 등록하지 않으셔서 학교 이름을 생략할 수 없습니다.")
+			extension.ChannelMessageSend(s, channelId, "학교 정보를 등록하지 않으셔서 교명을 생략하실 수 없습니다.")
 			return
 		}
 		schoolInfo, _ = api.GetSchoolInfoByCode(user.ScCode)
