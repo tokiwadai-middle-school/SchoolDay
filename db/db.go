@@ -167,3 +167,22 @@ func UserUpdate(discordId string, user *models.User) (bool, error) {
 	}
 	return true, nil
 }
+
+func UserDelete(discordId string) error {
+	ctx := context.Background()
+
+	db, err := Database()
+
+	if err != nil {
+		return err
+	}
+
+	user, err := UserGet(discordId)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = user.Delete(ctx, db)
+	return err
+}
