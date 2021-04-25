@@ -27,6 +27,7 @@ func init() {
 	flag.Parse()
 }
 
+// 자동 알림
 func NotifyEveryMinute(s *discordgo.Session) {
 	date, err := extension.NtpTimeKorea()
 
@@ -123,6 +124,7 @@ func main() {
 	}
 
 	go NotifyEveryMinute(dg)
+	dg.UpdateGameStatus(0, "%도움말")
 
 	log.Infof("Bot is now running.  Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)
