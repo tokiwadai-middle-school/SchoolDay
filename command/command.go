@@ -20,27 +20,27 @@ var Commands = map[string]Command{
 	"도움말": {
 		Exec:        Help,
 		Description: "도움말 출력",
-		Usage:       []string{""},
+		Usage:       []string{"명령어"},
 	},
 	"학교등록": {
 		Exec:        AddSchool,
 		Description: "학교와 학급 등록",
-		Usage:       []string{"학교명", "학년", "반"},
+		Usage:       []string{"교명", "학년", "반"},
 	},
 	"학사일정": {
 		Exec:        SchoolSchedule,
 		Description: "학사일정 출력",
-		Usage:       []string{"학교명", "날짜", "학년", "반"},
+		Usage:       []string{"교명", "날짜"},
 	},
 	"시간표": {
 		Exec:        Timetable,
 		Description: "시간표 출력",
-		Usage:       []string{"학교명", "날짜", "학년", "반"},
+		Usage:       []string{"교명", "학년", "반", "날짜"},
 	},
 	"급식": {
 		Exec:        MealService,
 		Description: "급식 식단 출력",
-		Usage:       []string{"학교명", "날짜", "식사종류"},
+		Usage:       []string{"교명", "날짜", "식사종류"},
 	},
 	"학사일정알림": {
 		Exec:        ScheduleNotice,
