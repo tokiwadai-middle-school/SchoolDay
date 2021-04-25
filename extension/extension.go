@@ -56,6 +56,30 @@ func GetMealName(mealCode int) string {
 	return mealName
 }
 
+// 한국어 단어에 을/를 추가
+func AddKoreanObjectParticle(str string) string {
+	start := rune('가')
+	intervalEnd := rune('갛')
+	end := rune('힣')
+
+	mod := intervalEnd - start + 1
+	hasFinalConsonant := false
+
+	for _, r := range str {
+		if !(r >= start && r <= end) {
+			hasFinalConsonant = false
+		}
+
+		hasFinalConsonant = (r-start)%mod != 0
+	}
+
+	if hasFinalConsonant {
+		return str + "을"
+	} else {
+		return str + "를"
+	}
+}
+
 // 4자리 이하의 자연수인지 검사
 func IsValidNumber(str string) bool {
 	var digitCheck = regexp.MustCompile(`^[0-9]+$`)
