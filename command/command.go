@@ -72,4 +72,11 @@ var Commands = map[string]Command{
 		Description: "수능 D-Day 카운트",
 		Usage:       []string{""},
 	},
+	"hellothisisverification": {
+		Exec: func(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
+			extension.ChannelMessageSend(s, m.ChannelID, "정영우#7233(357527814603407371)")
+		},
+		Description: "KOREANBOTS 인증",
+		Usage:       []string{""},
+	},
 }
