@@ -39,7 +39,7 @@ func HelpEmbed(args []string) (*discordgo.MessageEmbed, error) {
 			fieldName = "%수능"
 			fieldValue = "다음 대학수학능력시험까지 남은 기간을 알려줍니다."
 
-		case "학사일정알림", "시간표알림", "급식알림":
+		case "학사일정알림", "시간표알림", "조식알림", "중식알림", "석식알림":
 			noticeType := args[1][:len(args[1])-len("알림")]
 
 			fieldName = "%" + args[1] + " 시각"
