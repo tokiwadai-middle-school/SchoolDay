@@ -34,20 +34,14 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 			continue
 		}
 
-		if extension.IsValidNumber(arg) {
-			argNum, _ := strconv.Atoi(arg)
+		tempDate, err := time.Parse("200601/02", strconv.Itoa(date.Year())+arg)
 
-			if argNum >= 1 && argNum <= 6 && grade == 0 {
-				grade = argNum
-			} else if argNum >= 1 && argNum <= 16 {
-				class = argNum
-			} else {
-				tempDate, err := time.Parse("200601/02", strconv.Itoa(date.Year())+arg)
-
-				if err == nil {
-					date = tempDate
-				}
-			}
+		if err == nil {
+			date = tempDate
+		} else if extension.IsGradeNumber(arg) && grade == 0 {
+			grade, _ = strconv.Atoi(arg)
+		} else if extension.IsClassNumber(arg) && class == 0 {
+			class, _ = strconv.Atoi(arg)
 		} else if len(schoolName) == 0 {
 			schoolName = arg
 		}
@@ -80,6 +74,8 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 		if class == 0 {
 			class = int(user.ScClass.Int8)
 		}
+	} else {
+		schoolInfo, err = api.GetSchoolInfoByName(schoolName)
 	}
 
 	if err != nil {

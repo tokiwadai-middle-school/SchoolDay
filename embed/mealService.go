@@ -37,8 +37,9 @@ func MealServiceEmbed(schoolInfo map[string]string, date time.Time, mealCode int
 
 	for _, key := range keys {
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-			Name:  extension.GetMealName(key),
-			Value: strings.Join(dailyMealService[key], "\n"),
+			Name:   extension.GetMealName(key),
+			Value:  strings.Join(dailyMealService[key], "\n"),
+			Inline: true,
 		})
 	}
 

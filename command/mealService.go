@@ -34,12 +34,10 @@ func MealService(s *discordgo.Session, m *discordgo.MessageCreate, args []string
 			continue
 		}
 
-		if extension.IsValidNumber(arg) {
-			tempDate, err := time.Parse("200601/02", strconv.Itoa(date.Year())+arg)
+		tempDate, err := time.Parse("200601/02", strconv.Itoa(date.Year())+arg)
 
-			if err == nil {
-				date = tempDate
-			}
+		if err == nil {
+			date = tempDate
 		} else if strings.Contains(arg, "조식") || strings.Contains(arg, "아침") {
 			mealCode = 1
 		} else if strings.Contains(arg, "중식") || strings.Contains(arg, "점심") {

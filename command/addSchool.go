@@ -37,29 +37,15 @@ func AddSchool(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 
 	var grade, class int
 
-	if extension.IsValidNumber(args[2]) {
-		argNum, _ := strconv.Atoi(args[2])
-
-		if argNum > 6 {
-			extension.ChannelMessageSend(s, channelId, "학년이 너무 높습니다: `%s`", args[2])
-			return
-		}
-
-		grade = argNum
+	if extension.IsGradeNumber(args[2]) {
+		grade, _ = strconv.Atoi(args[2])
 	} else {
 		extension.ChannelMessageSend(s, channelId, "학년을 잘못 입력하셨습니다: `%s`", args[2])
 		return
 	}
 
-	if extension.IsValidNumber(args[3]) {
-		argNum, _ := strconv.Atoi(args[3])
-
-		if argNum > 16 {
-			extension.ChannelMessageSend(s, channelId, "반이 너무 큽니다: `%s`", args[3])
-			return
-		}
-
-		class = argNum
+	if extension.IsClassNumber(args[3]) {
+		class, _ = strconv.Atoi(args[3])
 	} else {
 		extension.ChannelMessageSend(s, channelId, "반을 잘못 입력하셨습니다: `%s`", args[3])
 		return
