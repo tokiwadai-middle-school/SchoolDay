@@ -28,12 +28,12 @@ func HelpEmbed(args []string) (*discordgo.MessageEmbed, error) {
 			fieldValue = "당일 학사일정을 알려줍니다."
 
 		case "시간표":
-			fieldName = "%시간표 [교명 학년 반] [날짜]"
+			fieldName = "%시간표 [교명] [학년] [반] [날짜]"
 			fieldValue = "당일 시간표를 알려줍니다."
 
 		case "급식":
 			fieldName = "%급식 [교명] [날짜] [급식 종류]"
-			fieldValue = "당일 급식 식단을 알려줍니다."
+			fieldValue = "당일 급식 식단을 알려줍니다.\n급식 종류는 `아침`, `점심`, `저녁`이나\n`조식`, `중식`, `석식`이라고 입력하세요.\n급식 종류를 생략하면 당일 급식을 모두 알려줍니다."
 
 		case "수능":
 			fieldName = "%수능"
@@ -43,7 +43,7 @@ func HelpEmbed(args []string) (*discordgo.MessageEmbed, error) {
 			noticeType := args[1][:len(args[1])-len("알림")]
 
 			fieldName = "%" + args[1] + " [시각]"
-			fieldValue = fmt.Sprintf("봇이 매일 지정한 시각에 %s 알려줍니다.\n알림을 중지하려면 `%s`을 입력하세요.", extension.AddKoreanObjectParticle(noticeType), "%"+args[1])
+			fieldValue = fmt.Sprintf("봇이 매일 지정한 시각에 %s 알려줍니다.\n알림을 중지하려면 `%s`을 입력하세요.\n학교 정보를 먼저 등록하셔야 사용하실 수 있습니다.", extension.AddKoreanObjectParticle(noticeType), "%"+args[1])
 
 		default:
 			return nil, errors.New("")
@@ -63,10 +63,6 @@ func HelpEmbed(args []string) (*discordgo.MessageEmbed, error) {
 
 		if strings.Contains(fieldName, "날짜") {
 			embed.Description += "\n날짜는 12/06과 같은 방식으로 입력하세요.\n날짜를 생략하면 오늘로 처리됩니다."
-		}
-
-		if strings.Contains(fieldName, "급식 종류") {
-			embed.Description += "\n급식 종류는 '아침', '점심', '저녁'이나\n'조식', '중식', '석식'이라고 입력하세요.\n급식 종류를 생략하면 당일 급식을 모두 알려줍니다."
 		}
 
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
