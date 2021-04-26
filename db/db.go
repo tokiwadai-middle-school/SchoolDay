@@ -59,22 +59,27 @@ CREATE TABLE user (
 
 func Database() (*sqlx.DB, error) {
 	dsn := dbInterface.user + ":" + dbInterface.pwd + "@tcp(" + dbInterface.url + ")/" + dbInterface.database + "?charset=utf8mb4"
+
 	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}
-	//db.MustExec(schema)
+	defer db.Close()
+
 	boil.SetDB(db)
 	return db, nil
 }
 
 func IsExists(discordId string) (interface{}, error) {
 	ctx := context.Background()
+
 	db, err := Database()
 	if err != nil {
 		log.Fatalln(err)
 		return nil, err
 	}
+	defer db.Close()
+
 	status, err := models.UserExists(ctx, db, discordId)
 	if err != nil {
 		return nil, err
@@ -93,6 +98,7 @@ func UserAdd(discordId string, scCode string, scGrade null.Int8, scClass null.In
 		if err != nil {
 			return nil, err
 		}
+		defer db.Close()
 
 		ctx := context.Background()
 		resp := models.User{
@@ -117,10 +123,10 @@ func UserAdd(discordId string, scCode string, scGrade null.Int8, scClass null.In
 
 func UserGet(discordId string) (*models.User, error) {
 	db, err := Database()
-
 	if err != nil {
 		return nil, err
 	}
+	defer db.Close()
 
 	ctx := context.Background()
 	return models.FindUser(ctx, db, discordId)
@@ -128,10 +134,10 @@ func UserGet(discordId string) (*models.User, error) {
 
 func UserGetAll(format string, args ...interface{}) (models.UserSlice, error) {
 	db, err := Database()
-
 	if err != nil {
 		return nil, err
 	}
+	defer db.Close()
 
 	ctx := context.Background()
 	whereClause := fmt.Sprintf(format, args...)
@@ -145,6 +151,7 @@ func UserUpdate(discordId string, user *models.User) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	defer db.Close()
 
 	userResult, err := UserGet(discordId)
 	if err != nil {
@@ -172,10 +179,10 @@ func UserDelete(discordId string) error {
 	ctx := context.Background()
 
 	db, err := Database()
-
 	if err != nil {
 		return err
 	}
+	defer db.Close()
 
 	user, err := UserGet(discordId)
 
