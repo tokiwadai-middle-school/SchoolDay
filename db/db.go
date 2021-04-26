@@ -64,7 +64,6 @@ func Database() (*sqlx.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer db.Close()
 
 	boil.SetDB(db)
 	return db, nil
