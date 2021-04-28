@@ -3,6 +3,7 @@ package embed
 import (
 	"SchoolDay/api"
 	"SchoolDay/extension"
+	"fmt"
 	"sort"
 	"strconv"
 	"time"
@@ -43,7 +44,7 @@ func TimetableEmbed(schoolInfo map[string]string, date time.Time, grade int, cla
 	}
 
 	embed.Footer = &discordgo.MessageEmbedFooter{
-		Text: schoolInfo["SCHUL_NM"],
+		Text: fmt.Sprintf("%s %d-%d", schoolInfo["SCHUL_NM"], grade, class),
 	}
 
 	return &embed, nil
