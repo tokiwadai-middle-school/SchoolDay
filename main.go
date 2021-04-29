@@ -149,6 +149,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// 접두사 감지 시 명령어 검색
 	if strings.HasPrefix(m.Content, prefix) {
 		args := strings.Fields(m.Content[len(prefix):])
+
+		if len(args) == 0 {
+			return
+		}
+
 		cmd, exists := command.Commands[args[0]]
 
 		if !exists {
