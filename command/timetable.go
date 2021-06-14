@@ -19,31 +19,37 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 
 	var schoolInfo map[string]string
 
+	var date *time.Time = nil
+
 	schoolName := ""
 	grade, class := 0, 0
-
-	date, err := extension.NtpTimeKorea()
-
-	if err != nil {
-		log.Warningln(err)
-		return
-	}
 
 	for index, arg := range args {
 		if index == 0 {
 			continue
 		}
 
-		tempDate, err := time.Parse("200601/02", strconv.Itoa(date.Year())+arg)
+		num, err := strconv.Atoi(arg)
 
 		if err == nil {
-			date = tempDate
-		} else if extension.IsGradeNumber(arg) && grade == 0 {
-			grade, _ = strconv.Atoi(arg)
-		} else if extension.IsClassNumber(arg) && class == 0 {
-			class, _ = strconv.Atoi(arg)
-		} else if len(schoolName) == 0 {
-			schoolName = arg
+			if grade == 0 && num <= 6 && num >= 1 {
+				grade = num
+			} else if class == 0 && num <= 16 && num >= 1 {
+				class = num
+			}
+		} else {
+			tempDate, err := extension.ParseDate(arg)
+
+			if err == nil {
+				if date == nil {
+					date = tempDate
+				}
+				continue
+			}
+
+			if len(schoolName) == 0 {
+				schoolName = arg
+			}
 		}
 	}
 
@@ -74,8 +80,6 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 		if class == 0 {
 			class = int(user.ScClass.Int8)
 		}
-	} else {
-		schoolInfo, err = api.GetSchoolInfoByName(schoolName)
 	}
 
 	if err != nil {
@@ -89,7 +93,16 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 		return
 	}
 
-	embed, err := embed.TimetableEmbed(schoolInfo, date, grade, class)
+	if date == nil {
+		tempDate, err := extension.NtpTimeKorea()
+		if err != nil {
+			log.Warningln(err)
+			return
+		}
+		date = &tempDate
+	}
+
+	embed, err := embed.TimetableEmbed(schoolInfo, *date, grade, class)
 
 	if err != nil {
 		_, err := s.ChannelMessageSend(channelId, fmt.Sprintf("%d월 %d일 %d학년 %d반 수업이 없습니다.", date.Month(), date.Day(), grade, class))

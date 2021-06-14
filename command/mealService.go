@@ -5,8 +5,6 @@ import (
 	"SchoolDay/db"
 	"SchoolDay/embed"
 	"SchoolDay/extension"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -17,16 +15,11 @@ func MealService(s *discordgo.Session, m *discordgo.MessageCreate, args []string
 	discordId := m.Author.ID
 
 	var schoolInfo map[string]string
-	var mealCode int
 	var err error
 
-	date, err := extension.NtpTimeKorea()
+	var date *time.Time = nil
 
-	if err != nil {
-		log.Warningln(err)
-		return
-	}
-
+	mealCode := 0
 	schoolName := ""
 
 	for index, arg := range args {
@@ -34,17 +27,25 @@ func MealService(s *discordgo.Session, m *discordgo.MessageCreate, args []string
 			continue
 		}
 
-		tempDate, err := time.Parse("200601/02", strconv.Itoa(date.Year())+arg)
+		tempMealCode := extension.GetMealCode(arg)
+
+		if tempMealCode != 0 {
+			if mealCode != 0 {
+				mealCode = tempMealCode
+			}
+			continue
+		}
+
+		tempDate, err := extension.ParseDate(arg)
 
 		if err == nil {
-			date = tempDate
-		} else if strings.Contains(arg, "조식") || strings.Contains(arg, "아침") {
-			mealCode = 1
-		} else if strings.Contains(arg, "중식") || strings.Contains(arg, "점심") {
-			mealCode = 2
-		} else if strings.Contains(arg, "석식") || strings.Contains(arg, "저녁") {
-			mealCode = 3
-		} else if len(schoolName) == 0 {
+			if date == nil {
+				date = tempDate
+			}
+			continue
+		}
+
+		if len(schoolName) == 0 {
 			schoolName = arg
 		}
 	}
@@ -66,7 +67,16 @@ func MealService(s *discordgo.Session, m *discordgo.MessageCreate, args []string
 		}
 	}
 
-	embed, err := embed.MealServiceEmbed(schoolInfo, date, mealCode)
+	if date == nil {
+		tempDate, err := extension.NtpTimeKorea()
+		if err != nil {
+			log.Warningln(err)
+			return
+		}
+		date = &tempDate
+	}
+
+	embed, err := embed.MealServiceEmbed(schoolInfo, *date, mealCode)
 
 	if err != nil {
 		mealName := extension.GetMealName(mealCode)
