@@ -23,7 +23,7 @@ func AddSchool(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 		}
 		return
 	} else if len(args) < 4 {
-		extension.ChannelMessageSend(s, channelId, "사용법: `%s학교등록 [교명 학년 반]`", "%")
+		extension.ChannelMessageSend(s, channelId, "사용법: `%s학교등록 교명 학년 반`", "%")
 		return
 	}
 
