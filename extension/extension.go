@@ -34,6 +34,56 @@ func GetKoreanWeekday(date time.Time) string {
 	return "(" + koreanWeekday + ")"
 }
 
+func ParseDate(str string) (*time.Time, error) {
+	date, err := NtpTimeKorea()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var dayDifference int
+
+	switch str {
+	case "그제", "그저께":
+		dayDifference = -2
+	case "어제", "어저께":
+		dayDifference = -1
+	case "오늘":
+		dayDifference = 0
+	case "내일":
+		dayDifference = 1
+	case "모레":
+		dayDifference = 2
+	default:
+		date, err := time.Parse("01/02", str)
+
+		if err != nil {
+			return nil, err
+		}
+
+		return &date, nil
+	}
+
+	date = date.AddDate(0, 0, dayDifference)
+	return &date, nil
+}
+
+func GetMealCode(str string) int {
+	switch str {
+	case "조식", "아침":
+		return 1
+
+	case "중식", "점심":
+		return 2
+
+	case "석식", "저녁":
+		return 3
+
+	default:
+		return 0
+	}
+}
+
 // 급식 시간대 코드에 해당하는 이름 반환
 func GetMealName(mealCode int) string {
 	var mealName string
