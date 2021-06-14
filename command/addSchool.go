@@ -16,11 +16,10 @@ func AddSchool(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 
 	if len(args) == 1 {
 		err := db.UserDelete(discordId)
-
-		if err != nil {
-			extension.ChannelMessageSend(s, channelId, "삭제할 학교 정보가 없습니다.")
-		} else {
+		if err == nil {
 			extension.ChannelMessageSend(s, channelId, "등록된 학교 정보를 삭제했습니다.")
+		} else {
+			extension.ChannelMessageSend(s, channelId, "삭제할 학교 정보가 없습니다.")
 		}
 		return
 	} else if len(args) < 4 {
@@ -37,16 +36,16 @@ func AddSchool(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 
 	var grade, class int
 
-	if extension.IsGradeNumber(args[2]) {
-		grade, _ = strconv.Atoi(args[2])
-	} else {
+	grade, err = strconv.Atoi(args[2])
+
+	if err != nil || grade > 6 || grade < 1 {
 		extension.ChannelMessageSend(s, channelId, "학년을 잘못 입력하셨습니다: `%s`", args[2])
 		return
 	}
 
-	if extension.IsClassNumber(args[3]) {
-		class, _ = strconv.Atoi(args[3])
-	} else {
+	class, err = strconv.Atoi(args[3])
+
+	if err != nil || class > 16 || class < 1 {
 		extension.ChannelMessageSend(s, channelId, "반을 잘못 입력하셨습니다: `%s`", args[3])
 		return
 	}
