@@ -30,7 +30,7 @@ func MealService(s *discordgo.Session, m *discordgo.MessageCreate, args []string
 		tempMealCode := extension.GetMealCode(arg)
 
 		if tempMealCode != 0 {
-			if mealCode != 0 {
+			if mealCode == 0 {
 				mealCode = tempMealCode
 			}
 			continue
