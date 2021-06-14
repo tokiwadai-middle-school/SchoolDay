@@ -5,7 +5,6 @@ import (
 	"SchoolDay/db"
 	"SchoolDay/embed"
 	"SchoolDay/extension"
-	"strconv"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -18,12 +17,7 @@ func SchoolSchedule(s *discordgo.Session, m *discordgo.MessageCreate, args []str
 	var schoolInfo map[string]string
 	var err error
 
-	date, err := extension.NtpTimeKorea()
-
-	if err != nil {
-		log.Warningln(err)
-		return
-	}
+	var date *time.Time = nil
 
 	schoolName := ""
 
@@ -32,11 +26,16 @@ func SchoolSchedule(s *discordgo.Session, m *discordgo.MessageCreate, args []str
 			continue
 		}
 
-		tempDate, err := time.Parse("200601/02", strconv.Itoa(date.Year())+arg)
+		tempDate, err := extension.ParseDate(arg)
 
 		if err == nil {
-			date = tempDate
-		} else if len(schoolName) == 0 {
+			if date == nil {
+				date = tempDate
+			}
+			continue
+		}
+
+		if len(schoolName) == 0 {
 			schoolName = arg
 		}
 	}
@@ -58,7 +57,16 @@ func SchoolSchedule(s *discordgo.Session, m *discordgo.MessageCreate, args []str
 		}
 	}
 
-	embed, err := embed.SchoolScheduleEmbed(schoolInfo, date)
+	if date == nil {
+		tempDate, err := extension.NtpTimeKorea()
+		if err != nil {
+			log.Warningln(err)
+			return
+		}
+		date = &tempDate
+	}
+
+	embed, err := embed.SchoolScheduleEmbed(schoolInfo, *date)
 
 	if err != nil {
 		extension.ChannelMessageSend(s, channelId, "%d월 %d일 학사일정이 없습니다.", date.Month(), date.Day())
