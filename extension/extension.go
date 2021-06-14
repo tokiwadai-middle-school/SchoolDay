@@ -2,8 +2,6 @@ package extension
 
 import (
 	"fmt"
-	"regexp"
-	"strconv"
 	"time"
 
 	"github.com/beevik/ntp"
@@ -79,22 +77,6 @@ func AddKoreanObjectParticle(str string) string {
 	} else {
 		return str + "를"
 	}
-}
-
-// 1~6의 정수인지 확인
-func IsGradeNumber(str string) bool {
-	var digitCheck = regexp.MustCompile(`^[0-9]+$`)
-	num, _ := strconv.Atoi(str)
-
-	return digitCheck.MatchString(str) && num >= 1 && num <= 6
-}
-
-// 1~16의 정수인지 확인
-func IsClassNumber(str string) bool {
-	var digitCheck = regexp.MustCompile(`^[0-9]+$`)
-	num, _ := strconv.Atoi(str)
-
-	return digitCheck.MatchString(str) && num >= 1 && num <= 16
 }
 
 // 메시지 전송 및 예외 처리
