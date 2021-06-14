@@ -38,9 +38,9 @@ func ParseDate(str string) (*time.Time, error) {
 	var dayDifference int
 
 	switch str {
-	case "그제", "그저께":
+	case "그제":
 		dayDifference = -2
-	case "어제", "어저께":
+	case "어제":
 		dayDifference = -1
 	case "오늘":
 		dayDifference = 0
