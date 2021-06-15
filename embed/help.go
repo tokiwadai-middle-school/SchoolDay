@@ -58,11 +58,11 @@ func HelpEmbed(args []string) (*discordgo.MessageEmbed, error) {
 		}
 
 		if strings.Contains(fieldName, "시각") {
-			embed.Description += "\n시각은 18:06과 같은 방식으로 입력하세요."
+			embed.Description += "\n시각은 18:06과 같은 형식으로 입력하세요."
 		}
 
 		if strings.Contains(fieldName, "날짜") {
-			embed.Description += "\n날짜는 12/06과 같은 방식으로 입력하거나\n`그제`, `어제`, `오늘`, `내일`, `모레`라고 입력하세요.\n날짜를 생략하면 오늘로 처리됩니다."
+			embed.Description += "\n날짜는 12/06 또는 2020/12/06과 같은 형식이나\n`그제`, `어제`, `오늘`, `내일`, `모레`라고 입력하세요.\n날짜를 생략하면 오늘로 처리됩니다."
 		}
 
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
