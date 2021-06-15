@@ -36,6 +36,7 @@ func GetKoreanWeekday(date time.Time) string {
 
 func ParseDate(str string) (*time.Time, error) {
 	var dayDifference int
+	now, err := NtpTimeKorea()
 
 	switch str {
 	case "그제":
@@ -52,19 +53,21 @@ func ParseDate(str string) (*time.Time, error) {
 		date, err := time.Parse("01/02", str)
 
 		if err != nil {
-			return nil, err
+			date, err = time.Parse("2006/01/02", str)
+
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		return &date, nil
 	}
 
-	date, err := NtpTimeKorea()
-
 	if err != nil {
 		return nil, err
 	}
 
-	date = date.AddDate(0, 0, dayDifference)
+	date := now.AddDate(0, 0, dayDifference)
 	return &date, nil
 }
 
