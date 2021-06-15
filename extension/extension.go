@@ -2,6 +2,7 @@ package extension
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/beevik/ntp"
@@ -50,7 +51,7 @@ func ParseDate(str string) (*time.Time, error) {
 	case "모레":
 		dayDifference = 2
 	default:
-		date, err := time.Parse("01/02", str)
+		date, err := time.Parse("01/02", strconv.Itoa(now.Year())+str)
 
 		if err != nil {
 			date, err = time.Parse("2006/01/02", str)
