@@ -18,9 +18,16 @@ func SchoolScheduleEmbed(schoolInfo map[string]string, date time.Time) (*discord
 
 	dailySchoolSchedule := schoolSchedule[date.Format("20060102")]
 
+	now, err := extension.NtpTimeKorea()
+
 	var embed discordgo.MessageEmbed
 	embed.Color = 0x43b581
-	embed.Title = date.Format("1월 2일") + extension.GetKoreanWeekday(date)
+
+	format := "1월 2일"
+	if err == nil && date.Year() != now.Year() {
+		format = "2006년 " + format
+	}
+	embed.Title = date.Format(format) + extension.GetKoreanWeekday(date)
 
 	embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 		Name:  "학사일정",

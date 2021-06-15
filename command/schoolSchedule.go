@@ -69,7 +69,13 @@ func SchoolSchedule(s *discordgo.Session, m *discordgo.MessageCreate, args []str
 	embed, err := embed.SchoolScheduleEmbed(schoolInfo, *date)
 
 	if err != nil {
-		extension.ChannelMessageSend(s, channelId, "%d월 %d일 학사일정이 없습니다.", date.Month(), date.Day())
+		now, err := extension.NtpTimeKorea()
+		format := "1월 2일"
+		if err == nil && date.Year() != now.Year() {
+			format = "2006년 " + format
+		}
+
+		extension.ChannelMessageSend(s, channelId, "%s 학사일정이 없습니다.", date.Format(format))
 		return
 	}
 
