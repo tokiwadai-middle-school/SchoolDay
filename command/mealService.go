@@ -80,7 +80,14 @@ func MealService(s *discordgo.Session, m *discordgo.MessageCreate, args []string
 
 	if err != nil {
 		mealName := extension.GetMealName(mealCode)
-		extension.ChannelMessageSend(s, channelId, "%d월 %d일 %s이 없습니다.", date.Month(), date.Day(), mealName)
+
+		now, err := extension.NtpTimeKorea()
+		format := "1월 2일"
+		if err == nil && date.Year() != now.Year() {
+			format = "2006년 " + format
+		}
+
+		extension.ChannelMessageSend(s, channelId, "%s %s이 없습니다.", date.Format(format), mealName)
 		return
 	}
 

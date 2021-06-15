@@ -6,7 +6,6 @@ import (
 	"SchoolDay/embed"
 	"SchoolDay/extension"
 	"SchoolDay/models"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -58,12 +57,7 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 		user, err = db.UserGet(discordId)
 
 		if err != nil {
-			_, err = s.ChannelMessageSend(channelId, "학교 정보를 등록하지 않으셔서 교명과 학년, 반을 생략하실 수 없습니다.")
-
-			if err != nil {
-				log.Warningln(err)
-			}
-
+			extension.ChannelMessageSend(s, channelId, "학교 정보를 등록하지 않으셔서 교명과 학년, 반을 생략하실 수 없습니다.")
 			return
 		}
 
@@ -84,12 +78,7 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 
 	if err != nil {
 		log.Warningln(err)
-		_, err := s.ChannelMessageSend(channelId, fmt.Sprintf("학교를 찾을 수 없습니다: `%s`", schoolName))
-
-		if err != nil {
-			log.Warningln(err)
-		}
-
+		extension.ChannelMessageSend(s, channelId, "학교를 찾을 수 없습니다: `%s`", schoolName)
 		return
 	}
 
@@ -105,18 +94,14 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 	embed, err := embed.TimetableEmbed(schoolInfo, *date, grade, class)
 
 	if err != nil {
-		_, err := s.ChannelMessageSend(channelId, fmt.Sprintf("%d월 %d일 %d학년 %d반 수업이 없습니다.", date.Month(), date.Day(), grade, class))
-
-		if err != nil {
-			log.Warningln(err)
+		now, err := extension.NtpTimeKorea()
+		format := "1월 2일"
+		if err == nil && date.Year() != now.Year() {
+			format = "2006년 " + format
 		}
 
-		return
+		extension.ChannelMessageSend(s, channelId, "%s %d학년 %d반 수업이 없습니다.", date.Format(format), grade, class)
 	}
 
-	_, err = s.ChannelMessageSendEmbed(channelId, embed)
-
-	if err != nil {
-		log.Warningln(err)
-	}
+	extension.ChannelMessageSendEmbed(s, channelId, embed)
 }
