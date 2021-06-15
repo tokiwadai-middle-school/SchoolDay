@@ -103,9 +103,5 @@ func Timetable(s *discordgo.Session, m *discordgo.MessageCreate, args []string) 
 		extension.ChannelMessageSend(s, channelId, "%s %d학년 %d반 수업이 없습니다.", date.Format(format), grade, class)
 	}
 
-	_, err = s.ChannelMessageSendEmbed(channelId, embed)
-
-	if err != nil {
-		log.Warningln(err)
-	}
+	extension.ChannelMessageSendEmbed(s, channelId, embed)
 }
