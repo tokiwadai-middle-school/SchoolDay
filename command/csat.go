@@ -27,8 +27,8 @@ func Csat(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	dDay := csatDate.Sub(date)
 
 	if dDay.Microseconds() > 0 {
-		extension.ChannelMessageSend(s, channelId, "%d 대학수학능력시험까지 **%d일 %d시간 %d분 %d초**", csatDate.Year(), int(dDay.Hours())/24, int(dDay.Hours())%24, int(dDay.Minutes())%60, int(dDay.Seconds())%60)
+		extension.ChannelMessageSend(s, channelId, "%d 대학수학능력시험까지 **%d일 %d시간 %d분 %d초**", csatDate.Year()+1, int(dDay.Hours())/24, int(dDay.Hours())%24, int(dDay.Minutes())%60, int(dDay.Seconds())%60)
 	} else {
-		extension.ChannelMessageSend(s, channelId, "%d 대학수학능력시험 **D-Day**", csatDate.Year())
+		extension.ChannelMessageSend(s, channelId, "%d 대학수학능력시험 **D-Day**", csatDate.Year()+1)
 	}
 }
